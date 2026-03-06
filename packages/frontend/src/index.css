@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#0f0f1a] text-[#e2e8f0] font-sans;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-[#1a1a2e] border border-[#2a2a4a] rounded-xl p-4;
+  }
+  .btn-primary {
+    @apply bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors font-medium;
+  }
+  .btn-secondary {
+    @apply bg-[#2a2a4a] hover:bg-[#3a3a5a] text-[#e2e8f0] px-4 py-2 rounded-lg transition-colors;
+  }
+  .btn-danger {
+    @apply bg-red-900/50 hover:bg-red-800 text-red-300 px-4 py-2 rounded-lg transition-colors;
+  }
+  .input {
+    @apply bg-[#0f0f1a] border border-[#2a2a4a] text-[#e2e8f0] rounded-lg px-3 py-2 w-full
+           focus:outline-none focus:border-purple-500 placeholder-[#475569];
+  }
+  .select {
+    @apply bg-[#0f0f1a] border border-[#2a2a4a] text-[#e2e8f0] rounded-lg px-3 py-2
+           focus:outline-none focus:border-purple-500;
+  }
+  .badge-epic {
+    @apply text-purple-400 bg-purple-900/30 border border-purple-800/50 text-xs px-2 py-0.5 rounded;
+  }
+  .badge-tier {
+    @apply text-yellow-400 bg-yellow-900/30 border border-yellow-800/50 text-xs px-2 py-0.5 rounded;
+  }
+  .badge-normal {
+    @apply text-green-400 bg-green-900/20 text-xs px-2 py-0.5 rounded;
+  }
+  .badge-heroic {
+    @apply text-blue-400 bg-blue-900/20 text-xs px-2 py-0.5 rounded;
+  }
+  .badge-mythic {
+    @apply text-purple-400 bg-purple-900/20 text-xs px-2 py-0.5 rounded;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f0f1a; }
+::-webkit-scrollbar-thumb { background: #2a2a4a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5a; }

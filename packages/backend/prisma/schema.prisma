@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  displayName  String    @map("display_name")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  member       Member?
+  schedules    RaidSchedule[]
+
+  @@map("users")
+}
+
+model Member {
+  id           Int             @id @default(autoincrement())
+  userId       Int?            @unique @map("user_id")
+  displayName  String          @map("display_name")
+  wowClass     String          @map("wow_class")
+  wowClassZh   String          @map("wow_class_zh")
+  isLeader     Boolean         @default(false) @map("is_leader")
+  status       String          @default("active")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  user         User?           @relation(fields: [userId], references: [id])
+  distributions Distribution[]
+  requirements Requirement[]
+
+  @@map("members")
+}
+
+model RaidSchedule {
+  id             Int            @id @default(autoincrement())
+  date           String
+  weekId         String         @map("week_id")
+  note           String?
+  participantIds String         @default("[]") @map("participant_ids")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  createdBy      Int            @map("created_by")
+  creator        User           @relation(fields: [createdBy], references: [id])
+  raids          ScheduleRaid[]
+  kills          RaidKill[]
+
+  @@map("raid_schedules")
+}
+
+model ScheduleRaid {
+  id         Int          @id @default(autoincrement())
+  scheduleId Int          @map("schedule_id")
+  raidId     String       @map("raid_id")      // references static data
+  raidName   String       @map("raid_name")
+  difficulty String
+  schedule   RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, raidId, difficulty])
+  @@map("schedule_raids")
+}
+
+model RaidKill {
+  id               Int          @id @default(autoincrement())
+  scheduleId       Int          @map("schedule_id")
+  raidId           String       @map("raid_id")
+  bossId           String       @map("boss_id")
+  bossName         String       @map("boss_name")
+  difficulty       String
+  participantCount Int          @map("participant_count")
+  dropCount        Int          @map("drop_count")
+  createdAt        DateTime     @default(now()) @map("created_at")
+  schedule         RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  drops            Drop[]
+
+  @@map("raid_kills")
+}
+
+model Drop {
+  id           Int           @id @default(autoincrement())
+  raidKillId   Int           @map("raid_kill_id")
+  itemId       String        @map("item_id")
+  itemName     String        @map("item_name")
+  slot         String
+  isTier       Boolean       @default(false) @map("is_tier")
+  bonusDrop    Boolean       @default(false) @map("bonus_drop")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  raidKill     RaidKill      @relation(fields: [raidKillId], references: [id], onDelete: Cascade)
+  distribution Distribution?
+
+  @@map("drops")
+}
+
+model Distribution {
+  id            Int      @id @default(autoincrement())
+  dropId        Int      @unique @map("drop_id")
+  memberId      Int      @map("member_id")
+  distributedAt DateTime @default(now()) @map("distributed_at")
+  distributedBy Int      @map("distributed_by")
+  status        String   @default("assigned")
+  drop          Drop     @relation(fields: [dropId], references: [id], onDelete: Cascade)
+  member        Member   @relation(fields: [memberId], references: [id])
+
+  @@map("distributions")
+}
+
+model Requirement {
+  id        Int      @id @default(autoincrement())
+  memberId  Int      @map("member_id")
+  itemId    String   @map("item_id")
+  itemName  String   @map("item_name")
+  priority  String   @default("medium")
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, itemId])
+  @@map("requirements")
+}

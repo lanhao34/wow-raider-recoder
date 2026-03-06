@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -ao 'id\\\\s*:\\\\s*\"[^\"]*\"\\\\s*,\\\\s*name\\\\s*:\\\\s*\"[^\"]*\"' /Users/fuguangyuan/Cursor-proj/Kimi_Agent_Deployment_公会装备分配_v1/assets/index-4Wlpk5Oj.js 2>/dev/null | head -80)",
+      "Bash(grep -ao 'slot:\"[^\"]*\"' /Users/fuguangyuan/Cursor-proj/Kimi_Agent_Deployment_公会装备分配_v1/assets/index-4Wlpk5Oj.js 2>/dev/null | sort | uniq)",
+      "Bash(grep -ao 'quality:\"[^\"]*\"' /Users/fuguangyuan/Cursor-proj/Kimi_Agent_Deployment_公会装备分配_v1/assets/index-4Wlpk5Oj.js 2>/dev/null | sort | uniq)"
+    ]
+  }
+}
