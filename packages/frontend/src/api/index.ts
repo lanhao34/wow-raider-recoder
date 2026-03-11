@@ -75,7 +75,7 @@ export const raidKillsApi = {
 export const dropsApi = {
   createBatch: (data: {
     raidKillId: number;
-    items: Array<{ itemId: string; itemName: string; slot: string; isTier?: boolean; bonusDrop?: boolean }>;
+    items: Array<{ itemId: string; itemName: string; slot: string; isTier?: boolean; bonusDrop?: boolean; baseItemLevel?: number; quality?: string; armorType?: string }>;
   }) => api.post('/drops', data).then((r) => r.data),
   list: (params: { raidKillId?: number; memberId?: number }) =>
     api.get('/drops', { params }).then((r) => r.data),

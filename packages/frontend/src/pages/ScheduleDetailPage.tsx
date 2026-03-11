@@ -122,6 +122,9 @@ export default function ScheduleDetailPage() {
       itemName: item.name,
       slot: item.slot,
       isTier: item.isTier || false,
+      baseItemLevel: item.baseItemLevel,
+      quality: item.quality,
+      armorType: item.armorType,
     }));
     await dropsApi.createBatch({ raidKillId: dropModal.id, items });
     await refresh();
