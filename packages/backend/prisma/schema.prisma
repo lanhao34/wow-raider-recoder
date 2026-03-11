@@ -82,16 +82,20 @@ model RaidKill {
 }
 
 model Drop {
-  id           Int           @id @default(autoincrement())
-  raidKillId   Int           @map("raid_kill_id")
-  itemId       String        @map("item_id")
-  itemName     String        @map("item_name")
-  slot         String
-  isTier       Boolean       @default(false) @map("is_tier")
-  bonusDrop    Boolean       @default(false) @map("bonus_drop")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  raidKill     RaidKill      @relation(fields: [raidKillId], references: [id], onDelete: Cascade)
-  distribution Distribution?
+  id            Int           @id @default(autoincrement())
+  raidKillId    Int           @map("raid_kill_id")
+  itemId        String        @map("item_id")
+  itemName      String        @map("item_name")
+  itemLevel     Int           @map("item_level")      // 实际装等（根据难度计算）
+  baseItemLevel Int?          @map("base_item_level") // 英雄基础装等
+  slot          String
+  isTier        Boolean       @default(false) @map("is_tier")
+  bonusDrop     Boolean       @default(false) @map("bonus_drop")
+  quality       String        @default("epic")
+  armorType     String?       @map("armor_type")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  raidKill      RaidKill      @relation(fields: [raidKillId], references: [id], onDelete: Cascade)
+  distribution  Distribution?
 
   @@map("drops")
 }

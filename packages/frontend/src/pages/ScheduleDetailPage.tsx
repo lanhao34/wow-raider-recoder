@@ -16,9 +16,13 @@ interface Drop {
   id: number;
   itemId: string;
   itemName: string;
+  itemLevel: number;
+  baseItemLevel?: number;
   slot: string;
   isTier: boolean;
   bonusDrop: boolean;
+  quality?: string;
+  armorType?: string;
   distribution?: Distribution;
 }
 interface RaidKill {
@@ -323,6 +327,7 @@ export default function ScheduleDetailPage() {
                                   <span className="text-xs text-[#475569]">
                                     {SLOT_NAMES[drop.slot as keyof typeof SLOT_NAMES] || drop.slot}
                                   </span>
+                                  <span className="text-xs text-amber-400">{drop.itemLevel}装等</span>
                                   {drop.isTier && <span className="badge-tier flex items-center gap-1"><Star size={9} />套装</span>}
                                 </div>
                                 {drop.distribution ? (
@@ -508,7 +513,7 @@ function DropEntryModal({
                   )}
                 </div>
                 <div className="text-xs text-[#475569] ml-5 mt-0.5">
-                  {SLOT_NAMES[item.slot] || item.slot} · ilvl {item.itemLevel}
+                  {SLOT_NAMES[item.slot] || item.slot} · ilvl {item.baseItemLevel}
                 </div>
               </button>
             ))}

@@ -15,7 +15,7 @@ export const RAIDS: Raid[] = [
             "id": "avozun-1",
             "name": "虚空吞噬者之刃",
             "quality": "epic",
-            "itemLevel": 623,
+            "baseItemLevel": 623,
             "slot": "onehand",
             "type": "weapon",
             "stats": [
@@ -41,7 +41,7 @@ export const RAIDS: Raid[] = [
             "id": "avozun-2",
             "name": "阿福扎恩的虚空护肩",
             "quality": "epic",
-            "itemLevel": 623,
+            "baseItemLevel": 623,
             "slot": "shoulder",
             "type": "armor",
             "armorType": "plate",
@@ -68,7 +68,7 @@ export const RAIDS: Raid[] = [
             "id": "avozun-3",
             "name": "虚空行者护腿",
             "quality": "epic",
-            "itemLevel": 623,
+            "baseItemLevel": 623,
             "slot": "legs",
             "type": "armor",
             "armorType": "leather",
@@ -95,7 +95,7 @@ export const RAIDS: Raid[] = [
             "id": "avozun-4",
             "name": "虚空能量指环",
             "quality": "epic",
-            "itemLevel": 623,
+            "baseItemLevel": 623,
             "slot": "finger",
             "type": "jewelry",
             "stats": [
@@ -121,7 +121,7 @@ export const RAIDS: Raid[] = [
             "id": "avozun-5",
             "name": "虚空共鸣饰品",
             "quality": "epic",
-            "itemLevel": 623,
+            "baseItemLevel": 623,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -143,7 +143,7 @@ export const RAIDS: Raid[] = [
             "id": "vlashius-1",
             "name": "弗拉希乌斯之牙",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "mainhand",
             "type": "weapon",
             "stats": [
@@ -169,7 +169,7 @@ export const RAIDS: Raid[] = [
             "id": "vlashius-2",
             "name": "虚空龙鳞胸甲",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "chest",
             "type": "armor",
             "armorType": "mail",
@@ -196,7 +196,7 @@ export const RAIDS: Raid[] = [
             "id": "vlashius-3",
             "name": "龙裔法师长袍",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "chest",
             "type": "armor",
             "armorType": "cloth",
@@ -223,7 +223,7 @@ export const RAIDS: Raid[] = [
             "id": "vlashius-4",
             "name": "虚空龙族护腕",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "wrist",
             "type": "armor",
             "armorType": "plate",
@@ -250,7 +250,7 @@ export const RAIDS: Raid[] = [
             "id": "vlashius-5",
             "name": "龙血饰品",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -272,7 +272,7 @@ export const RAIDS: Raid[] = [
             "id": "sahadar-1",
             "name": "萨哈达尔的陨落之剑",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "twohand",
             "type": "weapon",
             "stats": [
@@ -298,7 +298,7 @@ export const RAIDS: Raid[] = [
             "id": "sahadar-2",
             "name": "陨落之王王冠",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "head",
             "type": "armor",
             "armorType": "plate",
@@ -326,7 +326,7 @@ export const RAIDS: Raid[] = [
             "id": "sahadar-3",
             "name": "虚空陨落护符",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "neck",
             "type": "jewelry",
             "stats": [
@@ -352,7 +352,7 @@ export const RAIDS: Raid[] = [
             "id": "sahadar-4",
             "name": "萨哈达尔之握",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "hands",
             "type": "armor",
             "armorType": "mail",
@@ -379,7 +379,7 @@ export const RAIDS: Raid[] = [
             "id": "sahadar-5",
             "name": "陨落者的复仇",
             "quality": "epic",
-            "itemLevel": 626,
+            "baseItemLevel": 626,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -401,7 +401,7 @@ export const RAIDS: Raid[] = [
             "id": "weigor-1",
             "name": "双子虚空之刃",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "onehand",
             "type": "weapon",
             "stats": [
@@ -427,7 +427,7 @@ export const RAIDS: Raid[] = [
             "id": "weigor-2",
             "name": "虚空双子护肩",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "shoulder",
             "type": "armor",
             "armorType": "leather",
@@ -455,7 +455,7 @@ export const RAIDS: Raid[] = [
             "id": "weigor-3",
             "name": "威厄高尔的虚空披风",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "back",
             "type": "armor",
             "stats": [
@@ -481,7 +481,7 @@ export const RAIDS: Raid[] = [
             "id": "weigor-4",
             "name": "艾佐拉克的凝视",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -496,7 +496,7 @@ export const RAIDS: Raid[] = [
             "id": "weigor-5",
             "name": "双子协调指环",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "finger",
             "type": "jewelry",
             "stats": [
@@ -529,7 +529,7 @@ export const RAIDS: Raid[] = [
             "id": "blindlight-1",
             "name": "光盲长枪",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "ranged",
             "type": "weapon",
             "stats": [
@@ -555,7 +555,7 @@ export const RAIDS: Raid[] = [
             "id": "blindlight-2",
             "name": "先锋军胸甲",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "chest",
             "type": "armor",
             "armorType": "plate",
@@ -583,7 +583,7 @@ export const RAIDS: Raid[] = [
             "id": "blindlight-3",
             "name": "光盲面罩",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "head",
             "type": "armor",
             "armorType": "mail",
@@ -610,7 +610,7 @@ export const RAIDS: Raid[] = [
             "id": "blindlight-4",
             "name": "先锋军战靴",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "feet",
             "type": "armor",
             "armorType": "leather",
@@ -637,7 +637,7 @@ export const RAIDS: Raid[] = [
             "id": "blindlight-5",
             "name": "光盲圣契",
             "quality": "epic",
-            "itemLevel": 629,
+            "baseItemLevel": 629,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -659,7 +659,7 @@ export const RAIDS: Raid[] = [
             "id": "crown-1",
             "name": "风行者的虚空长弓",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "ranged",
             "type": "weapon",
             "stats": [
@@ -685,7 +685,7 @@ export const RAIDS: Raid[] = [
             "id": "crown-2",
             "name": "宇宙之冕",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "head",
             "type": "armor",
             "armorType": "mail",
@@ -713,7 +713,7 @@ export const RAIDS: Raid[] = [
             "id": "crown-3",
             "name": "奥蕾莉亚的虚空之心",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -728,7 +728,7 @@ export const RAIDS: Raid[] = [
             "id": "crown-4",
             "name": "虚空行者之靴",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "feet",
             "type": "armor",
             "armorType": "cloth",
@@ -755,7 +755,7 @@ export const RAIDS: Raid[] = [
             "id": "crown-5",
             "name": "风行者的遗产",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "neck",
             "type": "jewelry",
             "stats": [
@@ -795,7 +795,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-1",
             "name": "未梦之神的凝视",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -810,7 +810,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-2",
             "name": "梦境撕裂者",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "twohand",
             "type": "weapon",
             "stats": [
@@ -836,7 +836,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-3",
             "name": "奇美鲁斯的梦境之翼",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "back",
             "type": "armor",
             "stats": [
@@ -862,7 +862,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-4",
             "name": "未梦者的护腿",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "legs",
             "type": "armor",
             "armorType": "plate",
@@ -890,7 +890,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-5",
             "name": "梦境精华指环",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "finger",
             "type": "jewelry",
             "stats": [
@@ -916,7 +916,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-6",
             "name": "奇美鲁斯的獠牙",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "onehand",
             "type": "weapon",
             "stats": [
@@ -942,7 +942,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-7",
             "name": "梦境行者手套",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "hands",
             "type": "armor",
             "armorType": "leather",
@@ -969,7 +969,7 @@ export const RAIDS: Raid[] = [
             "id": "chimyrus-8",
             "name": "未梦之神的腰带",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "waist",
             "type": "armor",
             "armorType": "mail",
@@ -1010,7 +1010,7 @@ export const RAIDS: Raid[] = [
             "id": "belorand-1",
             "name": "贝洛朗的烈焰之刃",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "onehand",
             "type": "weapon",
             "stats": [
@@ -1036,7 +1036,7 @@ export const RAIDS: Raid[] = [
             "id": "belorand-2",
             "name": "奥之子嗣的鳞片",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "chest",
             "type": "armor",
             "armorType": "plate",
@@ -1064,7 +1064,7 @@ export const RAIDS: Raid[] = [
             "id": "belorand-3",
             "name": "烈焰之心饰品",
             "quality": "legendary",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -1079,7 +1079,7 @@ export const RAIDS: Raid[] = [
             "id": "belorand-4",
             "name": "龙焰护腕",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "wrist",
             "type": "armor",
             "armorType": "mail",
@@ -1106,7 +1106,7 @@ export const RAIDS: Raid[] = [
             "id": "belorand-5",
             "name": "贝洛朗的龙瞳",
             "quality": "epic",
-            "itemLevel": 632,
+            "baseItemLevel": 632,
             "slot": "finger",
             "type": "jewelry",
             "stats": [
@@ -1139,7 +1139,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-1",
             "name": "黑暗之井",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "trinket",
             "type": "trinket",
             "stats": [
@@ -1154,7 +1154,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-2",
             "name": "鲁拉的虚空之触",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "mainhand",
             "type": "weapon",
             "stats": [
@@ -1180,7 +1180,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-3",
             "name": "至暗之夜王冠",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "head",
             "type": "armor",
             "armorType": "cloth",
@@ -1208,7 +1208,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-4",
             "name": "鲁拉的堕落之翼",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "back",
             "type": "armor",
             "stats": [
@@ -1234,7 +1234,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-5",
             "name": "虚空领主的护腿",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "legs",
             "type": "armor",
             "armorType": "leather",
@@ -1262,7 +1262,7 @@ export const RAIDS: Raid[] = [
             "id": "darkest-6",
             "name": "至暗之夜的低语",
             "quality": "legendary",
-            "itemLevel": 635,
+            "baseItemLevel": 635,
             "slot": "neck",
             "type": "jewelry",
             "stats": [
@@ -1308,12 +1308,36 @@ export function findItem(itemId: string) {
   return undefined;
 }
 
-export function getAllItems() {
-  const items = [];
+export function getAllItems(): { item: any; bossId: string; raidId: string }[] {
+  const items: { item: any; bossId: string; raidId: string }[] = [];
   for (const raid of RAIDS) {
     for (const boss of raid.bosses) {
-      items.push(...boss.loot);
+      for (const item of boss.loot) {
+        items.push({ item, bossId: boss.id, raidId: raid.id });
+      }
     }
   }
   return items;
+}
+
+export function getItemById(itemId: string): { item: any; bossId: string; raidId: string } | null {
+  for (const raid of RAIDS) {
+    for (const boss of raid.bosses) {
+      const item = boss.loot.find(i => i.id === itemId);
+      if (item) {
+        return { item, bossId: boss.id, raidId: raid.id };
+      }
+    }
+  }
+  return null;
+}
+
+export function getBossById(bossId: string): { boss: any; raidId: string } | null {
+  for (const raid of RAIDS) {
+    const boss = raid.bosses.find(b => b.id === bossId);
+    if (boss) {
+      return { boss, raidId: raid.id };
+    }
+  }
+  return null;
 }

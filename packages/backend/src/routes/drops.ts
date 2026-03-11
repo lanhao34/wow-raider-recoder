@@ -5,6 +5,18 @@ import { authenticate, requireLeader, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
+// 装等计算配置
+const DIFFICULTY_OFFSETS: Record<string, number> = {
+  normal: -13,
+  heroic: 0,
+  mythic: 13,
+};
+
+// 根据难度计算实际装等
+function getItemLevelForDifficulty(baseItemLevel: number, difficulty: string): number {
+  return baseItemLevel + (DIFFICULTY_OFFSETS[difficulty] || 0);
+}
+
 // POST /api/drops — batch, no count limit, duplicates allowed
 router.post(
   '/',
@@ -15,6 +27,9 @@ router.post(
   body('items.*.itemName').notEmpty(),
   body('items.*.slot').notEmpty(),
   body('items.*.isTier').optional().isBoolean(),
+  body('items.*.baseItemLevel').optional().isInt(),
+  body('items.*.quality').optional().isString(),
+  body('items.*.armorType').optional().isString(),
   async (req: AuthRequest, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -24,16 +39,36 @@ router.post(
     const kill = await prisma.raidKill.findUnique({ where: { id: raidKillId } });
     if (!kill) return res.status(404).json({ error: 'Raid kill not found' });
 
+    // Calculate item level based on difficulty
+    const difficulty = kill.difficulty;
+
     // No count limit — leader decides what dropped
     await prisma.drop.createMany({
-      data: items.map((item: { itemId: string; itemName: string; slot: string; isTier?: boolean }) => ({
-        raidKillId,
-        itemId: item.itemId,
-        itemName: item.itemName,
-        slot: item.slot,
-        isTier: item.isTier || false,
-        bonusDrop: false,
-      })),
+      data: items.map((item: { 
+        itemId: string; 
+        itemName: string; 
+        slot: string; 
+        isTier?: boolean;
+        baseItemLevel?: number;
+        quality?: string;
+        armorType?: string;
+      }) => {
+        const baseItemLevel = item.baseItemLevel || 0;
+        const itemLevel = getItemLevelForDifficulty(baseItemLevel, difficulty);
+        
+        return {
+          raidKillId,
+          itemId: item.itemId,
+          itemName: item.itemName,
+          itemLevel,
+          baseItemLevel,
+          slot: item.slot,
+          isTier: item.isTier || false,
+          bonusDrop: false,
+          quality: item.quality || 'epic',
+          armorType: item.armorType || null,
+        };
+      }),
     });
 
     const drops = await prisma.drop.findMany({
@@ -52,6 +87,7 @@ router.get('/', authenticate, async (req, res) => {
     const drops = await prisma.drop.findMany({
       where: { raidKillId: parseInt(raidKillId as string) },
       include: { distribution: { include: { member: true } } },
+      orderBy: { createdAt: 'desc' },
     });
     return res.json(drops);
   }
@@ -59,6 +95,7 @@ router.get('/', authenticate, async (req, res) => {
     const distributions = await prisma.distribution.findMany({
       where: { memberId: parseInt(memberId as string) },
       include: { drop: { include: { raidKill: { include: { schedule: true } } } } },
+      orderBy: { distributedAt: 'desc' },
     });
     return res.json(distributions);
   }

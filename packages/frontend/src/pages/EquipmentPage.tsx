@@ -55,7 +55,7 @@ function ItemCard({ item }: { item: Item }) {
               {item.armorType && (
                 <span className="text-[#94a3b8]">· {ARMOR_TYPE_ZH[item.armorType] || item.armorType}</span>
               )}
-              <span className="text-purple-400 font-medium">ilvl {item.itemLevel}</span>
+              <span className="text-purple-400 font-medium">ilvl {item.baseItemLevel}</span>
             </div>
           </div>
           <ChevronDown

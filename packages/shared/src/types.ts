@@ -38,13 +38,32 @@ export interface Item {
   id: string;
   name: string;
   quality: ItemQuality;
-  itemLevel: number;
+  baseItemLevel: number;  // 英雄难度基础装等
   slot: ItemSlot;
   type: ItemType;
   armorType?: ArmorType;
   stats: ItemStat[];
+  description?: string;
   effect?: string;
   isTier?: boolean;
+  wowheadUrl?: string;
+}
+
+// 难度配置
+export const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; color: string; itemLevelOffset: number }> = {
+  normal: { label: '普通', color: 'text-green-400', itemLevelOffset: -13 },
+  heroic: { label: '英雄', color: 'text-purple-400', itemLevelOffset: 0 },
+  mythic: { label: '史诗', color: 'text-orange-400', itemLevelOffset: 13 },
+};
+
+// 根据难度计算实际装等
+export function getItemLevelForDifficulty(baseItemLevel: number, difficulty: Difficulty): number {
+  return baseItemLevel + DIFFICULTY_CONFIG[difficulty].itemLevelOffset;
+}
+
+// 生成Wowhead搜索链接
+export function generateWowheadUrl(itemName: string): string {
+  return `https://www.wowhead.com/search?q=${encodeURIComponent(itemName)}`;
 }
 
 export interface Boss {
@@ -118,9 +137,13 @@ export interface DropResponse {
   raidKillId: number;
   itemId: string;
   itemName: string;
+  itemLevel: number;  // 实际装等（根据难度计算后）
+  baseItemLevel?: number;  // 英雄基础装等
   slot: string;
   isTier: boolean;
   bonusDrop: boolean;
+  quality?: string;
+  armorType?: string;
   distribution?: DistributionResponse;
   createdAt: string;
 }
