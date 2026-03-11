@@ -8,7 +8,7 @@ export type ArmorType = 'plate' | 'mail' | 'leather' | 'cloth';
 export type ItemQuality = 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type StatType = 'strength' | 'agility' | 'intellect' | 'stamina' | 'crit' | 'haste' | 'mastery' | 'versatility';
 export type DistributionStatus = 'assigned' | 'received';
-export type RequirementPriority = 'high' | 'medium' | 'low';
+export type RequirementPriority = 'bis' | 'high' | 'medium' | 'low';
 export interface ItemStat {
     type: StatType;
     value: number;

@@ -19,7 +19,7 @@ router.get('/', auth_1.authenticate, async (req, res) => {
     return res.json(requirements);
 });
 // POST /api/requirements
-router.post('/', auth_1.authenticate, (0, express_validator_1.body)('itemId').notEmpty(), (0, express_validator_1.body)('itemName').notEmpty(), (0, express_validator_1.body)('priority').isIn(['high', 'medium', 'low']), (0, express_validator_1.body)('note').optional().isString(), async (req, res) => {
+router.post('/', auth_1.authenticate, (0, express_validator_1.body)('itemId').notEmpty(), (0, express_validator_1.body)('itemName').notEmpty(), (0, express_validator_1.body)('priority').isIn(['bis', 'high', 'medium', 'low']), (0, express_validator_1.body)('note').optional().isString(), async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty())
         return res.status(400).json({ errors: errors.array() });

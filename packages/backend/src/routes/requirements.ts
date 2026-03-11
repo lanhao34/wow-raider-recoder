@@ -22,7 +22,7 @@ router.post(
   authenticate,
   body('itemId').notEmpty(),
   body('itemName').notEmpty(),
-  body('priority').isIn(['high', 'medium', 'low']),
+  body('priority').isIn(['bis', 'high', 'medium', 'low']),
   body('note').optional().isString(),
   async (req: AuthRequest, res) => {
     const errors = validationResult(req);

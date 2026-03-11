@@ -9,13 +9,14 @@ interface Requirement {
   memberId: number;
   itemId: string;
   itemName: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: 'bis' | 'high' | 'medium' | 'low';
   note?: string;
   createdAt: string;
 }
 
-const PRIORITY_LABELS = { high: '高', medium: '中', low: '低' };
+const PRIORITY_LABELS = { bis: 'BIS', high: '高', medium: '中', low: '低' };
 const PRIORITY_COLORS = {
+  bis: 'text-purple-400 bg-purple-900/30 border-purple-600/50',
   high: 'text-red-400 bg-red-900/20 border-red-800/50',
   medium: 'text-yellow-400 bg-yellow-900/20 border-yellow-800/50',
   low: 'text-green-400 bg-green-900/20 border-green-800/50',
@@ -28,7 +29,7 @@ export default function RequirementsPage() {
   const [requirements, setRequirements] = useState<Requirement[]>([]);
   const [showPicker, setShowPicker] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
-  const [priority, setPriority] = useState<'high' | 'medium' | 'low'>('medium');
+  const [priority, setPriority] = useState<'bis' | 'high' | 'medium' | 'low'>('medium');
   const [note, setNote] = useState('');
   const [filter, setFilter] = useState('');
   const [loading, setLoading] = useState(true);
@@ -152,7 +153,7 @@ export default function RequirementsPage() {
               <div className="p-4 border-t border-[#2a2a4a] space-y-3">
                 <div className="flex gap-3 items-center">
                   <span className="text-sm text-[#94a3b8]">优先级</span>
-                  {(['high', 'medium', 'low'] as const).map((p) => (
+                  {(['bis', 'high', 'medium', 'low'] as const).map((p) => (
                     <button
                       key={p}
                       onClick={() => setPriority(p)}
