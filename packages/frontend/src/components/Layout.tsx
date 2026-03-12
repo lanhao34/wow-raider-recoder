@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/auth';
 import { WOW_CLASS_COLORS } from '@guild/shared';
 import type { WowClass } from '@guild/shared';
 import {
-  CalendarDays, BookOpen, ListChecks, Shield, Users, Database, LogOut, Sword
+  CalendarDays, BookOpen, ListChecks, Shield, Users, Database, LogOut, Sword, Crown
 } from 'lucide-react';
 
 export default function Layout() {
@@ -27,16 +27,20 @@ export default function Layout() {
   ];
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className="w-56 bg-[#1a1a2e] border-r border-[#2a2a4a] flex flex-col shrink-0">
+      <aside className="w-60 bg-card border-r border-border flex flex-col shrink-0">
         {/* Logo */}
-        <div className="p-4 border-b border-[#2a2a4a]">
-          <div className="flex items-center gap-2 mb-1">
-            <Sword className="text-purple-400" size={20} />
-            <span className="font-bold text-purple-300 text-sm">元气养老院</span>
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-violet-700 flex items-center justify-center shadow-lg shadow-purple-500/20">
+              <Sword className="text-white" size={18} />
+            </div>
+            <div>
+              <span className="font-bold text-white text-sm">元气养老院</span>
+              <div className="text-[10px] text-muted-foreground">装备分配系统</div>
+            </div>
           </div>
-          <div className="text-xs text-[#475569]">装备分配系统</div>
         </div>
 
         {/* Nav */}
@@ -46,35 +50,58 @@ export default function Layout() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-purple-900/50 text-purple-300 border border-purple-800/50'
-                    : 'text-[#94a3b8] hover:bg-[#2a2a4a] hover:text-[#e2e8f0]'
+                    ? 'bg-primary/20 text-primary border border-primary/30 shadow-sm'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`
               }
             >
-              <Icon size={16} />
+              <Icon size={18} />
               {label}
             </NavLink>
           ))}
         </nav>
 
         {/* User info */}
-        <div className="p-4 border-t border-[#2a2a4a]">
-          <div className="mb-2">
-            <div className="text-sm font-medium text-[#e2e8f0]">{member?.displayName || user?.displayName}</div>
-            <div className="text-xs flex items-center gap-1">
-              {isLeader && <span className="text-yellow-400">团长 · </span>}
-              {member ? (
-                <span style={{ color: WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8' }}>
-                  {member.wowClassZh}
-                </span>
-              ) : (
-                <span className="text-[#475569]">未绑定角色</span>
-              )}
+        <div className="p-4 border-t border-border">
+          <div className="flex items-center gap-3 mb-3">
+            <div 
+              className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-slate-950"
+              style={{ 
+                backgroundColor: member ? WOW_CLASS_COLORS[member.wowClass as WowClass] : '#94a3b8',
+                boxShadow: '0 0 10px rgba(0,0,0,0.3)'
+              }}
+            >
+              {(member?.displayName || user?.displayName || '?').charAt(0)}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-foreground truncate">
+                {member?.displayName || user?.displayName}
+              </div>
+              <div className="text-xs flex items-center gap-1">
+                {isLeader && (
+                  <span className="inline-flex items-center gap-1 text-amber-400">
+                    <Crown size={10} />
+                    团长
+                  </span>
+                )}
+                {member && isLeader && <span className="text-muted-foreground">·</span>}
+                {member && (
+                  <span style={{ color: WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8' }}>
+                    {member.wowClassZh}
+                  </span>
+                )}
+                {!member && !isLeader && (
+                  <span className="text-muted-foreground">未绑定角色</span>
+                )}
+              </div>
             </div>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-2 text-xs text-[#475569] hover:text-red-400 transition-colors">
+          <button 
+            onClick={handleLogout} 
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-red-400 hover:bg-red-500/10 transition-all"
+          >
             <LogOut size={14} />
             退出登录
           </button>
