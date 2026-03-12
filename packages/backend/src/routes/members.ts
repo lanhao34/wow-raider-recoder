@@ -28,8 +28,8 @@ router.get('/', authenticate, async (req: AuthRequest, res) => {
     isLeader: m.isLeader,
     status: m.status,
     userId: m.userId,
-    username: m.user.username,
-    isSuperAdmin: m.user.isSuperAdmin,
+    username: m.user?.username || null,
+    isSuperAdmin: m.user?.isSuperAdmin || false,
   })));
 });
 
@@ -106,7 +106,7 @@ router.delete('/:id', requireLeader, async (req: AuthRequest, res) => {
   }
   
   // 不能删除超管用户
-  if (member.user.isSuperAdmin) {
+  if (member.user?.isSuperAdmin) {
     return res.status(403).json({ error: '不能删除超级管理员角色' });
   }
   

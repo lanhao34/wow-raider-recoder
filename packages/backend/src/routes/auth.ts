@@ -36,32 +36,13 @@ router.post(
       data: { username, passwordHash, displayName },
     });
 
-    // 创建第一个角色
-    // 如果是超管账号，自动设为团长（isLeader=true）
-    const isSuperAdminUser = (username === 'admin' && password === 'Admin0306');
-    const member = await prisma.member.create({
-      data: {
-        userId: user.id,
-        displayName,
-        wowClass: wowClass || 'warrior',
-        wowClassZh: wowClassZh || '战士',
-        isLeader: isSuperAdminUser,
-        status: 'active',
-      },
-    });
-
+    // 注册时不再自动创建角色
+    // 用户登录后可以认领角色或创建新角色
     const token = generateToken(user.id);
     return res.status(201).json({
       token,
       user: { id: user.id, username: user.username, displayName: user.displayName },
-      member: {
-        id: member.id,
-        displayName: member.displayName,
-        wowClass: member.wowClass,
-        wowClassZh: member.wowClassZh,
-        isLeader: member.isLeader,
-        status: member.status,
-      },
+      member: null,
     });
   }
 );

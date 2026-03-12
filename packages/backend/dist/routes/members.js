@@ -30,8 +30,8 @@ router.get('/', auth_1.authenticate, async (req, res) => {
         isLeader: m.isLeader,
         status: m.status,
         userId: m.userId,
-        username: m.user.username,
-        isSuperAdmin: m.user.isSuperAdmin,
+        username: m.user?.username || null,
+        isSuperAdmin: m.user?.isSuperAdmin || false,
     })));
 });
 // POST /api/members - 创建新成员
@@ -95,7 +95,7 @@ router.delete('/:id', auth_1.requireLeader, async (req, res) => {
         return res.status(403).json({ error: '不能删除团长角色' });
     }
     // 不能删除超管用户
-    if (member.user.isSuperAdmin) {
+    if (member.user?.isSuperAdmin) {
         return res.status(403).json({ error: '不能删除超级管理员角色' });
     }
     await client_1.default.member.delete({ where: { id } });

@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth';
 import memberRoutes from './routes/members';
+import claimRoutes from './routes/claims';
 import scheduleRoutes from './routes/schedules';
 import raidKillRoutes from './routes/raidKills';
 import dropRoutes from './routes/drops';
@@ -26,6 +27,7 @@ app.get('/api/health', (_req, res) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/members', memberRoutes);
+app.use('/api/claims', claimRoutes);
 app.use('/api/schedules', scheduleRoutes);
 app.use('/api/raid-kills', raidKillRoutes);
 app.use('/api/drops', dropRoutes);

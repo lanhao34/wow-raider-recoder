@@ -17,9 +17,14 @@ export default function Layout() {
 
   const navItems = [
     { to: '/calendar', label: '日程日历', icon: CalendarDays },
+    // 没有角色的用户显示"认领角色"，有角色的显示"我的需求"
+    ...(!member ? [
+      { to: '/claim', label: '认领角色', icon: Users, highlight: true },
+    ] : [
+      { to: '/requirements', label: '我的需求', icon: ListChecks },
+      { to: '/tier', label: '套装追踪', icon: Shield },
+    ]),
     { to: '/equipment', label: '装备手册', icon: BookOpen },
-    { to: '/requirements', label: '我的需求', icon: ListChecks },
-    { to: '/tier', label: '套装追踪', icon: Shield },
     ...(isLeader ? [
       { to: '/members', label: '成员管理', icon: Users },
       { to: '/data', label: '数据管理', icon: Database },
@@ -45,7 +50,7 @@ export default function Layout() {
 
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-1">
-          {navItems.map(({ to, label, icon: Icon }) => (
+          {navItems.map(({ to, label, icon: Icon, highlight }) => (
             <NavLink
               key={to}
               to={to}
@@ -53,6 +58,8 @@ export default function Layout() {
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
                     ? 'bg-primary/20 text-primary border border-primary/30 shadow-sm'
+                    : highlight
+                    ? 'bg-purple-900/30 text-purple-300 border border-purple-700/50 hover:bg-purple-900/50'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`
               }

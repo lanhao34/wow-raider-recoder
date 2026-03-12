@@ -22,15 +22,16 @@ model User {
 
 model Member {
   id            Int            @id @default(autoincrement())
-  userId        Int            @map("user_id")
+  userId        Int?           @map("user_id")
   displayName   String         @map("display_name")
   wowClass      String         @map("wow_class")
   wowClassZh    String         @map("wow_class_zh")
   isLeader      Boolean        @default(false) @map("is_leader")
   status        String         @default("active")
+  isClaimed     Boolean        @default(false) @map("is_claimed")
   createdAt     DateTime       @default(now()) @map("created_at")
   distributions Distribution[]
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
   requirements  Requirement[]
 
   @@map("members")
