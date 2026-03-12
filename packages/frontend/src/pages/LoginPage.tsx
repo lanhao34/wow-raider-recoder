@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
-import { Sword } from 'lucide-react';
+import { Sword, Check, X } from 'lucide-react';
 
 export default function LoginPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login');
@@ -12,9 +12,53 @@ export default function LoginPage() {
   const { login, register, isLoading } = useAuthStore();
   const navigate = useNavigate();
 
+  // 实时验证
+  const validations = useMemo(() => {
+    if (tab !== 'register') return null;
+    
+    const usernameValid = username.length >= 3 && username.length <= 30;
+    const passwordValid = password.length >= 6;
+    const displayNameValid = displayName.length >= 1 && displayName.length <= 50;
+    
+    // 密码强度
+    let passwordStrength: 'weak' | 'medium' | 'strong' = 'weak';
+    if (password.length >= 6) {
+      if (/[A-Z]/.test(password) && /[0-9]/.test(password)) {
+        passwordStrength = 'strong';
+      } else if (password.length >= 8) {
+        passwordStrength = 'medium';
+      }
+    }
+    
+    return {
+      usernameValid,
+      passwordValid,
+      displayNameValid,
+      passwordStrength,
+      allValid: usernameValid && passwordValid && displayNameValid,
+    };
+  }, [username, password, displayName, tab]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    
+    // 前端验证
+    if (tab === 'register' && validations) {
+      if (!validations.usernameValid) {
+        setError('用户名长度 3-30 个字符');
+        return;
+      }
+      if (!validations.passwordValid) {
+        setError('密码长度至少 6 位');
+        return;
+      }
+      if (!validations.displayNameValid) {
+        setError('显示名称长度 1-50 个字符');
+        return;
+      }
+    }
+    
     try {
       if (tab === 'login') {
         await login(username, password);
@@ -69,7 +113,17 @@ export default function LoginPage() {
                 placeholder="3-30 个字符"
                 required
               />
+              {tab === 'register' && username.length > 0 && (
+                <div className={`text-xs mt-1 ${validations?.usernameValid ? 'text-green-400' : 'text-red-400'}`}>
+                  {validations?.usernameValid ? (
+                    <span className="flex items-center gap-1"><Check size={12} /> 格式正确</span>
+                  ) : (
+                    <span className="flex items-center gap-1"><X size={12} /> 长度 3-30 个字符</span>
+                  )}
+                </div>
+              )}
             </div>
+            
             {tab === 'register' && (
               <div>
                 <label className="block text-sm text-[#94a3b8] mb-1">显示名称</label>
@@ -81,8 +135,18 @@ export default function LoginPage() {
                   placeholder="你的角色昵称"
                   required
                 />
+                {displayName.length > 0 && (
+                  <div className={`text-xs mt-1 ${validations?.displayNameValid ? 'text-green-400' : 'text-red-400'}`}>
+                    {validations?.displayNameValid ? (
+                      <span className="flex items-center gap-1"><Check size={12} /> 格式正确</span>
+                    ) : (
+                      <span className="flex items-center gap-1"><X size={12} /> 长度 1-50 个字符</span>
+                    )}
+                  </div>
+                )}
               </div>
             )}
+            
             <div>
               <label className="block text-sm text-[#94a3b8] mb-1">密码</label>
               <input
@@ -93,6 +157,40 @@ export default function LoginPage() {
                 placeholder={tab === 'register' ? '至少 6 位' : ''}
                 required
               />
+              {tab === 'register' && password.length > 0 && (
+                <div className="mt-2 space-y-1">
+                  {/* 密码强度条 */}
+                  <div className="flex gap-1">
+                    <div className={`h-1 flex-1 rounded ${
+                      validations!.passwordStrength === 'weak' ? 'bg-red-500' : 
+                      validations!.passwordStrength === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                    }`} />
+                    <div className={`h-1 flex-1 rounded ${
+                      validations!.passwordStrength === 'medium' || validations!.passwordStrength === 'strong' ? 'bg-yellow-500' : 'bg-[#1e293b]'
+                    }`} />
+                    <div className={`h-1 flex-1 rounded ${
+                      validations!.passwordStrength === 'strong' ? 'bg-green-500' : 'bg-[#1e293b]'
+                    }`} />
+                  </div>
+                  <div className="text-xs text-[#475569]">
+                    密码强度：
+                    <span className={
+                      validations!.passwordStrength === 'weak' ? 'text-red-400' : 
+                      validations!.passwordStrength === 'medium' ? 'text-yellow-400' : 'text-green-400'
+                    }>
+                      {validations!.passwordStrength === 'weak' ? '弱' : 
+                       validations!.passwordStrength === 'medium' ? '中' : '强'}
+                    </span>
+                  </div>
+                  <div className={`text-xs ${validations?.passwordValid ? 'text-green-400' : 'text-red-400'}`}>
+                    {validations?.passwordValid ? (
+                      <span className="flex items-center gap-1"><Check size={12} /> 格式正确</span>
+                    ) : (
+                      <span className="flex items-center gap-1"><X size={12} /> 长度至少 6 位</span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && (
@@ -103,7 +201,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || (tab === 'register' && !validations?.allValid)}
               className="btn-primary w-full py-2.5 disabled:opacity-50"
             >
               {isLoading ? '处理中...' : tab === 'login' ? '登录' : '注册'}

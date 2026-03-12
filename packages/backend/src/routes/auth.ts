@@ -9,12 +9,20 @@ const router = Router();
 // POST /api/auth/register
 router.post(
   '/register',
-  body('username').isLength({ min: 3, max: 30 }).trim(),
-  body('password').isLength({ min: 6 }),
-  body('displayName').isLength({ min: 1, max: 50 }).trim(),
+  body('username')
+    .isLength({ min: 3, max: 30 }).withMessage('用户名长度 3-30 个字符')
+    .trim(),
+  body('password')
+    .isLength({ min: 6 }).withMessage('密码长度至少 6 位'),
+  body('displayName')
+    .isLength({ min: 1, max: 50 }).withMessage('显示名称长度 1-50 个字符')
+    .trim(),
   async (req, res) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    if (!errors.isEmpty()) {
+      const errorMsg = errors.array()[0].msg;
+      return res.status(400).json({ error: errorMsg });
+    }
 
     const { username, password, displayName } = req.body;
 

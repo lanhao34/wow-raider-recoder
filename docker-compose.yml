@@ -37,7 +37,7 @@ services:
       dockerfile: packages/frontend/Dockerfile
     container_name: guild_frontend
     ports:
-      - "80:80"
+      - "8088:80"
     depends_on:
       - backend
     restart: unless-stopped

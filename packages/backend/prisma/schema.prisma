@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,11 +8,11 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  username     String    @unique
-  passwordHash String    @map("password_hash")
-  displayName  String    @map("display_name")
-  createdAt    DateTime  @default(now()) @map("created_at")
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  passwordHash String         @map("password_hash")
+  displayName  String         @map("display_name")
+  createdAt    DateTime       @default(now()) @map("created_at")
   member       Member?
   schedules    RaidSchedule[]
 
@@ -23,17 +20,17 @@ model User {
 }
 
 model Member {
-  id           Int             @id @default(autoincrement())
-  userId       Int?            @unique @map("user_id")
-  displayName  String          @map("display_name")
-  wowClass     String          @map("wow_class")
-  wowClassZh   String          @map("wow_class_zh")
-  isLeader     Boolean         @default(false) @map("is_leader")
-  status       String          @default("active")
-  createdAt    DateTime        @default(now()) @map("created_at")
-  user         User?           @relation(fields: [userId], references: [id])
+  id            Int            @id @default(autoincrement())
+  userId        Int?           @unique @map("user_id")
+  displayName   String         @map("display_name")
+  wowClass      String         @map("wow_class")
+  wowClassZh    String         @map("wow_class_zh")
+  isLeader      Boolean        @default(false) @map("is_leader")
+  status        String         @default("active")
+  createdAt     DateTime       @default(now()) @map("created_at")
   distributions Distribution[]
-  requirements Requirement[]
+  user          User?          @relation(fields: [userId], references: [id])
+  requirements  Requirement[]
 
   @@map("members")
 }
@@ -43,12 +40,12 @@ model RaidSchedule {
   date           String
   weekId         String         @map("week_id")
   note           String?
-  participantIds String         @default("[]") @map("participant_ids")
   createdAt      DateTime       @default(now()) @map("created_at")
   createdBy      Int            @map("created_by")
+  participantIds String         @default("[]") @map("participant_ids")
+  kills          RaidKill[]
   creator        User           @relation(fields: [createdBy], references: [id])
   raids          ScheduleRaid[]
-  kills          RaidKill[]
 
   @@map("raid_schedules")
 }
@@ -56,7 +53,7 @@ model RaidSchedule {
 model ScheduleRaid {
   id         Int          @id @default(autoincrement())
   scheduleId Int          @map("schedule_id")
-  raidId     String       @map("raid_id")      // references static data
+  raidId     String       @map("raid_id")
   raidName   String       @map("raid_name")
   difficulty String
   schedule   RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
@@ -75,8 +72,8 @@ model RaidKill {
   participantCount Int          @map("participant_count")
   dropCount        Int          @map("drop_count")
   createdAt        DateTime     @default(now()) @map("created_at")
-  schedule         RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   drops            Drop[]
+  schedule         RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 
   @@map("raid_kills")
 }
@@ -86,16 +83,16 @@ model Drop {
   raidKillId    Int           @map("raid_kill_id")
   itemId        String        @map("item_id")
   itemName      String        @map("item_name")
-  itemLevel     Int           @map("item_level")      // 实际装等（根据难度计算）
-  baseItemLevel Int?          @map("base_item_level") // 英雄基础装等
   slot          String
   isTier        Boolean       @default(false) @map("is_tier")
   bonusDrop     Boolean       @default(false) @map("bonus_drop")
-  quality       String        @default("epic")
-  armorType     String?       @map("armor_type")
   createdAt     DateTime      @default(now()) @map("created_at")
-  raidKill      RaidKill      @relation(fields: [raidKillId], references: [id], onDelete: Cascade)
+  armorType     String?       @map("armor_type")
+  baseItemLevel Int?          @map("base_item_level")
+  itemLevel     Int           @map("item_level")
+  quality       String        @default("epic")
   distribution  Distribution?
+  raidKill      RaidKill      @relation(fields: [raidKillId], references: [id], onDelete: Cascade)
 
   @@map("drops")
 }

@@ -37,10 +37,7 @@ app.use((err, _req, res, _next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Internal server error', message: err.message });
 });
-// 保持进程存活 + 绑定到 0.0.0.0
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Backend running on 0.0.0.0:${PORT}`);
+app.listen(PORT, () => {
+    console.log(`Backend running on port ${PORT}`);
 });
-const keepAlive = setInterval(() => {}, 2147483647);
-
 exports.default = app;
