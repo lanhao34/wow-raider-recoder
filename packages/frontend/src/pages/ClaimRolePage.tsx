@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
-import { UserCheck, Users, Clock, Check, X } from 'lucide-react';
+import { Users, Check, X, Clock } from 'lucide-react';
 
 interface Member {
   id: number;
@@ -13,7 +13,7 @@ interface Member {
 }
 
 export default function ClaimRolePage() {
-  const { user, isLeader, isSuperAdmin } = useAuthStore();
+  const { user, isLeader, isSuperAdmin, token } = useAuthStore();
   const navigate = useNavigate();
   const [availableMembers, setAvailableMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,14 +26,19 @@ export default function ClaimRolePage() {
 
   const fetchAvailableMembers = async () => {
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/available', {
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
         },
       });
+      if (!res.ok) {
+        if (res.status === 401) {
+          navigate('/login');
+          return;
+        }
+      }
       const data = await res.json();
-      setAvailableMembers(data);
+      setAvailableMembers(data || []);
     } catch (error) {
       console.error('Failed to fetch available members:', error);
     } finally {
@@ -46,7 +51,6 @@ export default function ClaimRolePage() {
     setMessage(null);
     
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/request', {
         method: 'POST',
         headers: { 
@@ -71,29 +75,24 @@ export default function ClaimRolePage() {
     }
   };
 
+  // 如果是团长/超管，显示待确认列表
   if (isLeader || isSuperAdmin) {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <UserCheck className="text-purple-400" size={24} />
+          <Users className="text-purple-400" size={24} />
           <h1 className="text-xl font-bold">角色认领管理</h1>
         </div>
-
-        <div className="card mb-6 bg-purple-900/20 border-purple-800/50">
-          <p className="text-sm text-purple-200">
-            这里是团员提交的角色认领申请。请确认申请人身份后批准或拒绝。
-          </p>
-        </div>
-
-        <PendingClaims />
+        <PendingClaims token={token} />
       </div>
     );
   }
 
+  // 普通用户显示可认领列表
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
-        <UserCheck className="text-purple-400" size={24} />
+        <Users className="text-purple-400" size={24} />
         <h1 className="text-xl font-bold">认领角色</h1>
       </div>
 
@@ -165,7 +164,7 @@ export default function ClaimRolePage() {
 }
 
 // 待确认的认领申请组件（仅团长/超管可见）
-function PendingClaims() {
+function PendingClaims({ token }: { token: string | null }) {
   const [pending, setPending] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<number | null>(null);
@@ -176,14 +175,14 @@ function PendingClaims() {
 
   const fetchPendingClaims = async () => {
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/pending', {
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',
         },
       });
+      if (!res.ok) return;
       const data = await res.json();
-      setPending(data);
+      setPending(data || []);
     } catch (error) {
       console.error('Failed to fetch pending claims:', error);
     } finally {
@@ -194,7 +193,6 @@ function PendingClaims() {
   const handleApprove = async (memberId: number) => {
     setProcessing(memberId);
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/approve', {
         method: 'POST',
         headers: { 
@@ -215,7 +213,6 @@ function PendingClaims() {
   const handleReject = async (memberId: number) => {
     setProcessing(memberId);
     try {
-      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/reject', {
         method: 'POST',
         headers: { 
