@@ -26,7 +26,12 @@ export default function ClaimRolePage() {
 
   const fetchAvailableMembers = async () => {
     try {
-      const res = await fetch('/api/claims/available');
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/claims/available', {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+      });
       const data = await res.json();
       setAvailableMembers(data);
     } catch (error) {
@@ -41,9 +46,13 @@ export default function ClaimRolePage() {
     setMessage(null);
     
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/request', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
         body: JSON.stringify({ memberId }),
       });
       
@@ -167,7 +176,12 @@ function PendingClaims() {
 
   const fetchPendingClaims = async () => {
     try {
-      const res = await fetch('/api/claims/pending');
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/claims/pending', {
+        headers: {
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
+      });
       const data = await res.json();
       setPending(data);
     } catch (error) {
@@ -180,9 +194,13 @@ function PendingClaims() {
   const handleApprove = async (memberId: number) => {
     setProcessing(memberId);
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/approve', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
         body: JSON.stringify({ memberId }),
       });
       
@@ -197,9 +215,13 @@ function PendingClaims() {
   const handleReject = async (memberId: number) => {
     setProcessing(memberId);
     try {
+      const token = localStorage.getItem('token');
       const res = await fetch('/api/claims/reject', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : '',
+        },
         body: JSON.stringify({ memberId }),
       });
       
