@@ -24,7 +24,7 @@ interface AuthState {
   isLeader: boolean;
   isSuperAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, password: string, displayName: string, wowClass?: string, wowClassZh?: string) => Promise<void>;
+  register: (username: string, password: string, displayName?: string) => Promise<void>;
   logout: () => void;
   loadFromStorage: () => Promise<void>;
 }
@@ -56,16 +56,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  register: async (username, password, displayName, wowClass, wowClassZh) => {
+  register: async (username, password, displayName) => {
     set({ isLoading: true });
     try {
-      const data = await authApi.register({ username, password, displayName, wowClass, wowClassZh });
+      const data = await authApi.register({ username, password, displayName });
       localStorage.setItem('token', data.token);
       set({
         token: data.token,
         user: data.user,
         member: data.member,
-        isLeader: data.member?.isLeader || false,
+        isLeader: false,
         isSuperAdmin: false,
         isLoading: false,
       });

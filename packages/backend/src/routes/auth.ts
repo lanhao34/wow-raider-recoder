@@ -14,11 +14,7 @@ router.post(
     .trim(),
   body('password')
     .isLength({ min: 6 }).withMessage('密码长度至少 6 位'),
-  body('displayName')
-    .isLength({ min: 1, max: 50 }).withMessage('显示名称长度 1-50 个字符')
-    .trim(),
-  body('wowClass').optional().isString(),
-  body('wowClassZh').optional().isString(),
+  body('displayName').optional().isString(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -26,14 +22,14 @@ router.post(
       return res.status(400).json({ error: errorMsg });
     }
 
-    const { username, password, displayName, wowClass, wowClassZh } = req.body;
+    const { username, password, displayName } = req.body;
 
     const existing = await prisma.user.findUnique({ where: { username } });
     if (existing) return res.status(400).json({ error: '用户名已存在' });
 
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
-      data: { username, passwordHash, displayName },
+      data: { username, passwordHash, displayName: displayName || username },
     });
 
     // 注册时不再自动创建角色

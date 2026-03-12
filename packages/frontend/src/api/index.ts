@@ -30,7 +30,7 @@ export default api;
 export const authApi = {
   login: (data: { username: string; password: string }) =>
     api.post('/auth/login', data).then((r) => r.data),
-  register: (data: { username: string; password: string; displayName: string; wowClass?: string; wowClassZh?: string }) =>
+  register: (data: { username: string; password: string; displayName?: string }) =>
     api.post('/auth/register', data).then((r) => r.data),
   me: () => api.get('/auth/me').then((r) => r.data),
 };
