@@ -19,6 +19,7 @@ function authenticate(req, res, next) {
     try {
         const payload = jsonwebtoken_1.default.verify(token, JWT_SECRET);
         req.userId = payload.userId;
+        req.isSuperAdmin = payload.isSuperAdmin || false;
         next();
     }
     catch {
@@ -27,6 +28,11 @@ function authenticate(req, res, next) {
 }
 async function requireLeader(req, res, next) {
     authenticate(req, res, async () => {
+        // Super admin has leader permissions
+        if (req.isSuperAdmin) {
+            req.isLeader = true;
+            return next();
+        }
         const member = await client_1.default.member.findFirst({
             where: { userId: req.userId, isLeader: true },
         });
@@ -40,6 +46,11 @@ async function requireLeader(req, res, next) {
 }
 async function loadMember(req, _res, next) {
     if (req.userId) {
+        // Super admin has leader permissions
+        if (req.isSuperAdmin) {
+            req.isLeader = true;
+            return next();
+        }
         const member = await client_1.default.member.findFirst({
             where: { userId: req.userId },
         });

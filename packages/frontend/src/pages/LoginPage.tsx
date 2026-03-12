@@ -206,7 +206,7 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#94a3b8]"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
               {tab === 'register' && password.length > 0 && (
@@ -262,7 +262,7 @@ export default function LoginPage() {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#94a3b8]"
                   >
-                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showConfirmPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                   </button>
                 </div>
                 {confirmPassword.length > 0 && (
