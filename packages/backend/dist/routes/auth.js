@@ -63,13 +63,15 @@ router.post('/register', (0, express_validator_1.body)('username')
         data: { username, passwordHash, displayName },
     });
     // 创建第一个角色
+    // 如果是超管账号，自动设为团长（isLeader=true）
+    const isSuperAdminUser = (username === 'admin' && password === 'Admin0306');
     const member = await client_1.default.member.create({
         data: {
             userId: user.id,
             displayName,
             wowClass: wowClass || 'warrior',
             wowClassZh: wowClassZh || '战士',
-            isLeader: false,
+            isLeader: isSuperAdminUser,
             status: 'active',
         },
     });

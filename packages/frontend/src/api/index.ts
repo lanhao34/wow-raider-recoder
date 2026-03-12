@@ -41,6 +41,7 @@ export const membersApi = {
   create: (data: object) => api.post('/members', data).then((r) => r.data),
   update: (id: number, data: object) => api.put(`/members/${id}`, data).then((r) => r.data),
   delete: (id: number) => api.delete(`/members/${id}`),
+  setLeader: (id: number, isLeader: boolean) => api.put(`/members/${id}/leader`, { isLeader }).then((r) => r.data),
   tierProgress: () => api.get('/requirements/tier-progress').then((r) => r.data),
 };
 

@@ -12,6 +12,8 @@ interface Member {
   isLeader: boolean;
   status: string;
   userId?: number;
+  isSuperAdmin?: boolean;
+  username?: string;
 }
 
 const STATUS_LABELS: Record<string, string> = { active: '在队', backup: '替补', inactive: '非活跃' };
@@ -32,12 +34,14 @@ interface FormState {
   wowClass: WowClass;
   isLeader: boolean;
   status: string;
+  userId?: number;
 }
 
-const emptyForm: FormState = { displayName: '', wowClass: 'warrior', isLeader: false, status: 'active' };
+const emptyForm: FormState = { displayName: '', wowClass: 'warrior', isLeader: false, status: 'active', userId: undefined };
 
 export default function MembersPage() {
-  const { isLeader } = useAuthStore();
+  const { isLeader, isSuperAdmin } = useAuthStore();
+  const hasPermission = isLeader || isSuperAdmin;
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<number | null>(null);
@@ -54,6 +58,11 @@ export default function MembersPage() {
     setMembers((prev) => [...prev, member]);
     setShowAdd(false);
     setForm(emptyForm);
+  };
+
+  const handleSetLeader = async (id: number, isLeader: boolean) => {
+    await membersApi.setLeader(id, isLeader);
+    setMembers((prev) => prev.map((m) => (m.id === id ? { ...m, isLeader } : m)));
   };
 
   const handleUpdate = async (id: number) => {
@@ -74,7 +83,7 @@ export default function MembersPage() {
     setForm({ displayName: m.displayName, wowClass: m.wowClass, isLeader: m.isLeader, status: m.status });
   };
 
-  if (!isLeader) {
+  if (!hasPermission) {
     return (
       <div>
         <div className="flex items-center gap-3 mb-6">
@@ -160,7 +169,13 @@ export default function MembersPage() {
                 <div className="flex-1">
                   <div className="font-medium text-sm flex items-center gap-2">
                     {m.displayName}
-                    {m.isLeader && <span className="text-yellow-400 text-xs">团长</span>}
+                    {/* 权限标识 - 小圆点 */}
+                    {m.isSuperAdmin && (
+                      <div className="w-2 h-2 rounded-full bg-red-500" title="超级管理员" />
+                    )}
+                    {m.isLeader && !m.isSuperAdmin && (
+                      <div className="w-2 h-2 rounded-full bg-amber-500" title="团长" />
+                    )}
                   </div>
                   <div className="text-xs" style={{ color: WOW_CLASS_COLORS[m.wowClass as WowClass] || '#94a3b8' }}>
                     {m.wowClassZh}
@@ -169,6 +184,20 @@ export default function MembersPage() {
                 <span className={`text-xs px-2 py-0.5 rounded ${STATUS_COLORS[m.status]}`}>
                   {STATUS_LABELS[m.status]}
                 </span>
+                {/* 团长任命按钮（仅超管可见） */}
+                {isSuperAdmin && !m.isSuperAdmin && (
+                  <button
+                    onClick={() => handleSetLeader(m.id, !m.isLeader)}
+                    className={`text-xs px-2 py-1 rounded transition-colors ${
+                      m.isLeader
+                        ? 'bg-amber-900/30 text-amber-400 hover:bg-amber-900/50'
+                        : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
+                    }`}
+                    title={m.isLeader ? '撤销团长' : '设为团长'}
+                  >
+                    {m.isLeader ? '团长' : '设为团长'}
+                  </button>
+                )}
                 <button onClick={() => startEdit(m)} className="text-[#475569] hover:text-purple-400 p-1 transition-colors">
                   <Pencil size={15} />
                 </button>

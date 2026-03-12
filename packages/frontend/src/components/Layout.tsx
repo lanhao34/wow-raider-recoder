@@ -79,20 +79,15 @@ export default function Layout() {
               <div className="text-sm font-medium text-foreground truncate">
                 {member?.displayName || user?.displayName}
               </div>
-              <div className="text-xs flex items-center gap-1">
+              <div className="text-xs flex items-center gap-2">
+                {/* 权限标识 - 用小圆点颜色区分，不显示文字 */}
                 {isSuperAdmin && (
-                  <span className="inline-flex items-center gap-1 text-red-400 font-medium">
-                    <Crown size={10} />
-                    超管
-                  </span>
+                  <div className="w-2 h-2 rounded-full bg-red-500" title="超级管理员" />
                 )}
                 {isLeader && !isSuperAdmin && (
-                  <span className="inline-flex items-center gap-1 text-amber-400">
-                    <Crown size={10} />
-                    团长
-                  </span>
+                  <div className="w-2 h-2 rounded-full bg-amber-500" title="团长" />
                 )}
-                {(isLeader || isSuperAdmin) && member && <span className="text-muted-foreground">·</span>}
+                {/* 职业 */}
                 {member && (
                   <span style={{ color: WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8' }}>
                     {member.wowClassZh}

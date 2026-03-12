@@ -1,96 +1,144 @@
 import { Router } from 'express';
-import { body, validationResult } from 'express-validator';
 import prisma from '../prisma/client';
-import { authenticate, requireLeader, AuthRequest } from '../middleware/auth';
+import { authenticate, AuthRequest, requireLeader } from '../middleware/auth';
 
 const router = Router();
 
-// GET /api/members
-router.get('/', authenticate, async (_req, res) => {
+// GET /api/members - 获取所有成员
+router.get('/', authenticate, async (req: AuthRequest, res) => {
   const members = await prisma.member.findMany({
-    orderBy: [{ isLeader: 'desc' }, { displayName: 'asc' }],
-  });
-  return res.json(members);
-});
-
-// POST /api/members (leader only)
-router.post(
-  '/',
-  requireLeader,
-  body('displayName').isLength({ min: 1, max: 50 }).trim(),
-  body('wowClass').notEmpty(),
-  body('wowClassZh').notEmpty(),
-  body('isLeader').optional().isBoolean(),
-  body('status').optional().isIn(['active', 'backup', 'inactive']),
-  async (req: AuthRequest, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    const { displayName, wowClass, wowClassZh, isLeader = false, status = 'active', userId } = req.body;
-    const member = await prisma.member.create({
-      data: { displayName, wowClass, wowClassZh, isLeader, status, userId: userId || null },
-    });
-    return res.status(201).json(member);
-  }
-);
-
-// PUT /api/members/:id (leader only)
-router.put(
-  '/:id',
-  requireLeader,
-  body('displayName').optional().isLength({ min: 1, max: 50 }).trim(),
-  body('wowClass').optional().notEmpty(),
-  body('isLeader').optional().isBoolean(),
-  body('status').optional().isIn(['active', 'backup', 'inactive']),
-  async (req: AuthRequest, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-    const id = parseInt(req.params.id);
-    const { displayName, wowClass, wowClassZh, isLeader, status, userId } = req.body;
-
-    const member = await prisma.member.update({
-      where: { id },
-      data: {
-        ...(displayName !== undefined && { displayName }),
-        ...(wowClass !== undefined && { wowClass }),
-        ...(wowClassZh !== undefined && { wowClassZh }),
-        ...(isLeader !== undefined && { isLeader }),
-        ...(status !== undefined && { status }),
-        ...(userId !== undefined && { userId }),
+    include: {
+      user: {
+        select: {
+          username: true,
+          isSuperAdmin: true,
+        },
       },
-    });
-    return res.json(member);
-  }
-);
-
-// DELETE /api/members/:id (leader only)
-router.delete('/:id', requireLeader, async (req, res) => {
-  const id = parseInt(req.params.id);
-  await prisma.member.delete({ where: { id } });
-  return res.status(204).send();
+    },
+    orderBy: {
+      displayName: 'asc',
+    },
+  });
+  
+  res.json(members.map(m => ({
+    id: m.id,
+    displayName: m.displayName,
+    wowClass: m.wowClass,
+    wowClassZh: m.wowClassZh,
+    isLeader: m.isLeader,
+    status: m.status,
+    userId: m.userId,
+    username: m.user.username,
+    isSuperAdmin: m.user.isSuperAdmin,
+  })));
 });
 
-// GET /api/members/:id/tier-progress
-router.get('/:id/tier-progress', authenticate, async (req, res) => {
+// POST /api/members - 创建新成员
+router.post('/', requireLeader, async (req: AuthRequest, res) => {
+  const { displayName, wowClass, wowClassZh, isLeader, status, userId } = req.body;
+  
+  // 如果没有指定 userId，使用当前用户的 ID
+  const targetUserId = userId || req.userId;
+  
+  const member = await prisma.member.create({
+    data: {
+      displayName,
+      wowClass,
+      wowClassZh,
+      isLeader: isLeader || false,
+      status: status || 'active',
+      userId: targetUserId!,
+    },
+  });
+  
+  res.status(201).json(member);
+});
+
+// PUT /api/members/:id - 更新成员
+router.put('/:id', requireLeader, async (req: AuthRequest, res) => {
   const id = parseInt(req.params.id);
-  const tierSlots = ['head', 'shoulder', 'chest', 'hands', 'legs'];
-
-  const distributions = await prisma.distribution.findMany({
-    where: { memberId: id },
-    include: { drop: true },
+  const { displayName, wowClass, wowClassZh, isLeader, status } = req.body;
+  
+  const member = await prisma.member.update({
+    where: { id },
+    data: {
+      displayName,
+      wowClass,
+      wowClassZh,
+      isLeader,
+      status,
+    },
   });
+  
+  res.json(member);
+});
 
-  const tierProgress: Record<string, boolean> = {};
-  for (const slot of tierSlots) {
-    tierProgress[slot] = distributions.some(d => d.drop.isTier && d.drop.slot === slot);
+// DELETE /api/members/:id - 删除成员
+// 团长可以删除普通团员角色，超管可以删除任何角色
+router.delete('/:id', requireLeader, async (req: AuthRequest, res) => {
+  const id = parseInt(req.params.id);
+  
+  const member = await prisma.member.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          isSuperAdmin: true,
+        },
+      },
+    },
+  });
+  
+  if (!member) {
+    return res.status(404).json({ error: '角色不存在' });
   }
+  
+  // 检查权限
+  // 超管可以删除任何角色
+  if (req.isSuperAdmin) {
+    await prisma.member.delete({ where: { id } });
+    return res.json({ success: true });
+  }
+  
+  // 团长只能删除普通团员角色
+  if (member.isLeader) {
+    return res.status(403).json({ error: '不能删除团长角色' });
+  }
+  
+  // 不能删除超管用户
+  if (member.user.isSuperAdmin) {
+    return res.status(403).json({ error: '不能删除超级管理员角色' });
+  }
+  
+  await prisma.member.delete({ where: { id } });
+  res.json({ success: true });
+});
 
-  return res.json({
-    memberId: id,
-    ...tierProgress,
-    count: Object.values(tierProgress).filter(Boolean).length,
+// PUT /api/members/:id/leader - 任命/撤销团长
+// 只有超管可以操作
+router.put('/:id/leader', authenticate, async (req: AuthRequest, res) => {
+  const id = parseInt(req.params.id);
+  const { isLeader } = req.body;
+  
+  // 只有超管可以任命团长
+  if (!req.isSuperAdmin) {
+    return res.status(403).json({ error: '只有超级管理员可以任命团长' });
+  }
+  
+  const member = await prisma.member.update({
+    where: { id },
+    data: { isLeader },
   });
+  
+  // 如果是任命团长，同时更新该用户的所有角色为团长
+  if (isLeader) {
+    await prisma.member.updateMany({
+      where: { userId: member.userId },
+      data: { isLeader: true },
+    });
+  }
+  
+  res.json(member);
 });
 
 export default router;
