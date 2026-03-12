@@ -53,6 +53,6 @@ export async function loadMember(req: AuthRequest, _res: Response, next: NextFun
   next();
 }
 
-export function generateToken(userId: number): string {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
+export function generateToken(userId: number, isSuperAdmin: boolean = false): string {
+  return jwt.sign({ userId, isSuperAdmin }, JWT_SECRET, { expiresIn: '30d' });
 }

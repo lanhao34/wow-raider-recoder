@@ -8,20 +8,21 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  username     String         @unique
-  passwordHash String         @map("password_hash")
-  displayName  String         @map("display_name")
-  createdAt    DateTime       @default(now()) @map("created_at")
-  member       Member?
-  schedules    RaidSchedule[]
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  passwordHash  String         @map("password_hash")
+  displayName   String         @map("display_name")
+  isSuperAdmin  Boolean        @default(false) @map("is_super_admin")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  members       Member[]
+  schedules     RaidSchedule[]
 
   @@map("users")
 }
 
 model Member {
   id            Int            @id @default(autoincrement())
-  userId        Int?           @unique @map("user_id")
+  userId        Int            @map("user_id")
   displayName   String         @map("display_name")
   wowClass      String         @map("wow_class")
   wowClassZh    String         @map("wow_class_zh")
@@ -29,7 +30,7 @@ model Member {
   status        String         @default("active")
   createdAt     DateTime       @default(now()) @map("created_at")
   distributions Distribution[]
-  user          User?          @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   requirements  Requirement[]
 
   @@map("members")

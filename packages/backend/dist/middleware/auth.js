@@ -50,6 +50,6 @@ async function loadMember(req, _res, next) {
     }
     next();
 }
-function generateToken(userId) {
-    return jsonwebtoken_1.default.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
+function generateToken(userId, isSuperAdmin = false) {
+    return jsonwebtoken_1.default.sign({ userId, isSuperAdmin }, JWT_SECRET, { expiresIn: '30d' });
 }

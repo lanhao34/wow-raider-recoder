@@ -48,67 +48,88 @@ router.post('/register', (0, express_validator_1.body)('username')
     .trim(), (0, express_validator_1.body)('password')
     .isLength({ min: 6 }).withMessage('密码长度至少 6 位'), (0, express_validator_1.body)('displayName')
     .isLength({ min: 1, max: 50 }).withMessage('显示名称长度 1-50 个字符')
-    .trim(), async (req, res) => {
+    .trim(), (0, express_validator_1.body)('wowClass').optional().isString(), (0, express_validator_1.body)('wowClassZh').optional().isString(), async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const errorMsg = errors.array()[0].msg;
         return res.status(400).json({ error: errorMsg });
     }
-    const { username, password, displayName } = req.body;
+    const { username, password, displayName, wowClass, wowClassZh } = req.body;
     const existing = await client_1.default.user.findUnique({ where: { username } });
     if (existing)
-        return res.status(400).json({ error: 'Username already exists' });
+        return res.status(400).json({ error: '用户名已存在' });
     const passwordHash = await bcryptjs_1.default.hash(password, 12);
     const user = await client_1.default.user.create({
         data: { username, passwordHash, displayName },
     });
-    // First user to register automatically becomes the guild leader
-    const memberCount = await client_1.default.member.count();
-    let member = null;
-    if (memberCount === 0) {
-        member = await client_1.default.member.create({
-            data: {
-                userId: user.id,
-                displayName,
-                wowClass: 'warrior',
-                wowClassZh: '战士',
-                isLeader: true,
-                status: 'active',
-            },
-        });
-    }
+    // 创建第一个角色
+    const member = await client_1.default.member.create({
+        data: {
+            userId: user.id,
+            displayName,
+            wowClass: wowClass || 'warrior',
+            wowClassZh: wowClassZh || '战士',
+            isLeader: false,
+            status: 'active',
+        },
+    });
     const token = (0, auth_1.generateToken)(user.id);
     return res.status(201).json({
         token,
         user: { id: user.id, username: user.username, displayName: user.displayName },
-        member: member
-            ? {
-                id: member.id,
-                displayName: member.displayName,
-                wowClass: member.wowClass,
-                wowClassZh: member.wowClassZh,
-                isLeader: member.isLeader,
-                status: member.status,
-            }
-            : null,
+        member: {
+            id: member.id,
+            displayName: member.displayName,
+            wowClass: member.wowClass,
+            wowClassZh: member.wowClassZh,
+            isLeader: member.isLeader,
+            status: member.status,
+        },
     });
 });
 // POST /api/auth/login
 router.post('/login', (0, express_validator_1.body)('username').notEmpty().trim(), (0, express_validator_1.body)('password').notEmpty(), async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty())
-        return res.status(400).json({ errors: errors.array() });
+    if (!errors.isEmpty()) {
+        const errorMsg = errors.array()[0].msg;
+        return res.status(400).json({ error: errorMsg });
+    }
     const { username, password } = req.body;
+    // 检查是否是超级管理员
+    if (username === 'admin' && password === 'Admin0306') {
+        // 确保超级管理员用户存在
+        let user = await client_1.default.user.findUnique({ where: { username } });
+        if (!user) {
+            const passwordHash = await bcryptjs_1.default.hash(password, 12);
+            user = await client_1.default.user.create({
+                data: { username, passwordHash, displayName: '超级管理员', isSuperAdmin: true },
+            });
+        }
+        else {
+            // 更新为超级管理员
+            await client_1.default.user.update({
+                where: { id: user.id },
+                data: { isSuperAdmin: true },
+            });
+        }
+        const token = (0, auth_1.generateToken)(user.id, true);
+        return res.json({
+            token,
+            user: { id: user.id, username: user.username, displayName: user.displayName },
+            member: null,
+            isSuperAdmin: true,
+        });
+    }
     const user = await client_1.default.user.findUnique({ where: { username } });
     if (!user)
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ error: '用户名或密码错误' });
     const valid = await bcryptjs_1.default.compare(password, user.passwordHash);
     if (!valid)
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ error: '用户名或密码错误' });
     const member = await client_1.default.member.findFirst({
         where: { userId: user.id },
     });
-    const token = (0, auth_1.generateToken)(user.id);
+    const token = (0, auth_1.generateToken)(user.id, user.isSuperAdmin || false);
     return res.json({
         token,
         user: { id: user.id, username: user.username, displayName: user.displayName },
@@ -122,37 +143,37 @@ router.post('/login', (0, express_validator_1.body)('username').notEmpty().trim(
                 status: member.status,
             }
             : null,
+        isSuperAdmin: user.isSuperAdmin || false,
     });
 });
 // GET /api/auth/me
 router.get('/me', async (req, res) => {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer '))
-        return res.status(401).json({ error: 'No token' });
+        return res.status(401).json({ error: '未登录' });
     const jwt = await Promise.resolve().then(() => __importStar(require('jsonwebtoken')));
     const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
     try {
         const payload = jwt.default.verify(authHeader.split(' ')[1], JWT_SECRET);
         const user = await client_1.default.user.findUnique({ where: { id: payload.userId } });
         if (!user)
-            return res.status(404).json({ error: 'User not found' });
-        const member = await client_1.default.member.findFirst({ where: { userId: user.id } });
+            return res.status(404).json({ error: '用户不存在' });
+        const members = await client_1.default.member.findMany({ where: { userId: user.id } });
         return res.json({
             user: { id: user.id, username: user.username, displayName: user.displayName },
-            member: member
-                ? {
-                    id: member.id,
-                    displayName: member.displayName,
-                    wowClass: member.wowClass,
-                    wowClassZh: member.wowClassZh,
-                    isLeader: member.isLeader,
-                    status: member.status,
-                }
-                : null,
+            members: members.map(m => ({
+                id: m.id,
+                displayName: m.displayName,
+                wowClass: m.wowClass,
+                wowClassZh: m.wowClassZh,
+                isLeader: m.isLeader,
+                status: m.status,
+            })),
+            isSuperAdmin: user.isSuperAdmin || false,
         });
     }
     catch {
-        return res.status(401).json({ error: 'Invalid token' });
+        return res.status(401).json({ error: '登录已过期' });
     }
 });
 exports.default = router;

@@ -1,13 +1,32 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
-import { Sword, Check, X } from 'lucide-react';
+import { Sword, Check, X, Eye, EyeOff } from 'lucide-react';
+
+const WOW_CLASSES = [
+  { value: 'druid', label: '德鲁伊', zh: 'druid' },
+  { value: 'priest', label: '牧师', zh: 'priest' },
+  { value: 'paladin', label: '圣骑士', zh: 'paladin' },
+  { value: 'shaman', label: '萨满', zh: 'shaman' },
+  { value: 'monk', label: '武僧', zh: 'monk' },
+  { value: 'evoker', label: '唤魔师', zh: 'evoker' },
+  { value: 'warrior', label: '战士', zh: 'warrior' },
+  { value: 'rogue', label: '潜行者', zh: 'rogue' },
+  { value: 'mage', label: '法师', zh: 'mage' },
+  { value: 'warlock', label: '术士', zh: 'warlock' },
+  { value: 'hunter', label: '猎人', zh: 'hunter' },
+  { value: 'demonhunter', label: '恶魔猎手', zh: 'demonhunter' },
+];
 
 export default function LoginPage() {
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [wowClass, setWowClass] = useState('druid');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const { login, register, isLoading } = useAuthStore();
   const navigate = useNavigate();
@@ -18,6 +37,7 @@ export default function LoginPage() {
     
     const usernameValid = username.length >= 3 && username.length <= 30;
     const passwordValid = password.length >= 6;
+    const passwordMatch = password === confirmPassword && confirmPassword.length > 0;
     const displayNameValid = displayName.length >= 1 && displayName.length <= 50;
     
     // 密码强度
@@ -33,11 +53,12 @@ export default function LoginPage() {
     return {
       usernameValid,
       passwordValid,
+      passwordMatch,
       displayNameValid,
       passwordStrength,
-      allValid: usernameValid && passwordValid && displayNameValid,
+      allValid: usernameValid && passwordValid && passwordMatch && displayNameValid,
     };
-  }, [username, password, displayName, tab]);
+  }, [username, password, confirmPassword, displayName, tab]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +74,10 @@ export default function LoginPage() {
         setError('密码长度至少 6 位');
         return;
       }
+      if (!validations.passwordMatch) {
+        setError('两次输入的密码不一致');
+        return;
+      }
       if (!validations.displayNameValid) {
         setError('显示名称长度 1-50 个字符');
         return;
@@ -63,7 +88,8 @@ export default function LoginPage() {
       if (tab === 'login') {
         await login(username, password);
       } else {
-        await register(username, password, displayName);
+        const wowClassObj = WOW_CLASSES.find(c => c.value === wowClass);
+        await register(username, password, displayName, wowClass, wowClassObj?.zh || wowClass);
       }
       navigate('/calendar');
     } catch (err: unknown) {
@@ -125,38 +151,64 @@ export default function LoginPage() {
             </div>
             
             {tab === 'register' && (
-              <div>
-                <label className="block text-sm text-[#94a3b8] mb-1">显示名称</label>
-                <input
-                  className="input"
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="你的角色昵称"
-                  required
-                />
-                {displayName.length > 0 && (
-                  <div className={`text-xs mt-1 ${validations?.displayNameValid ? 'text-green-400' : 'text-red-400'}`}>
-                    {validations?.displayNameValid ? (
-                      <span className="flex items-center gap-1"><Check size={12} /> 格式正确</span>
-                    ) : (
-                      <span className="flex items-center gap-1"><X size={12} /> 长度 1-50 个字符</span>
-                    )}
-                  </div>
-                )}
-              </div>
+              <>
+                <div>
+                  <label className="block text-sm text-[#94a3b8] mb-1">显示名称</label>
+                  <input
+                    className="input"
+                    type="text"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="你的角色昵称"
+                    required
+                  />
+                  {displayName.length > 0 && (
+                    <div className={`text-xs mt-1 ${validations?.displayNameValid ? 'text-green-400' : 'text-red-400'}`}>
+                      {validations?.displayNameValid ? (
+                        <span className="flex items-center gap-1"><Check size={12} /> 格式正确</span>
+                      ) : (
+                        <span className="flex items-center gap-1"><X size={12} /> 长度 1-50 个字符</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm text-[#94a3b8] mb-1">职业</label>
+                  <select
+                    className="input"
+                    value={wowClass}
+                    onChange={(e) => setWowClass(e.target.value)}
+                    required
+                  >
+                    {WOW_CLASSES.map((c) => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-[#475569] mt-1">注册后可以为同一账号添加更多角色</p>
+                </div>
+              </>
             )}
             
             <div>
               <label className="block text-sm text-[#94a3b8] mb-1">密码</label>
-              <input
-                className="input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={tab === 'register' ? '至少 6 位' : ''}
-                required
-              />
+              <div className="relative">
+                <input
+                  className="input pr-10"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={tab === 'register' ? '至少 6 位' : ''}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#94a3b8]"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {tab === 'register' && password.length > 0 && (
                 <div className="mt-2 space-y-1">
                   {/* 密码强度条 */}
@@ -192,6 +244,38 @@ export default function LoginPage() {
                 </div>
               )}
             </div>
+
+            {tab === 'register' && (
+              <div>
+                <label className="block text-sm text-[#94a3b8] mb-1">确认密码</label>
+                <div className="relative">
+                  <input
+                    className="input pr-10"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="再次输入密码"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#475569] hover:text-[#94a3b8]"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {confirmPassword.length > 0 && (
+                  <div className={`text-xs mt-1 ${validations?.passwordMatch ? 'text-green-400' : 'text-red-400'}`}>
+                    {validations?.passwordMatch ? (
+                      <span className="flex items-center gap-1"><Check size={12} /> 密码一致</span>
+                    ) : (
+                      <span className="flex items-center gap-1"><X size={12} /> 两次密码不一致</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {error && (
               <div className="text-red-400 text-sm bg-red-900/20 border border-red-800/50 rounded-lg px-3 py-2">
