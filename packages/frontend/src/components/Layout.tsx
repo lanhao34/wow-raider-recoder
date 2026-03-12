@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export default function Layout() {
-  const { user, member, isLeader, logout } = useAuthStore();
+  const { user, member, isLeader, isSuperAdmin, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -80,19 +80,25 @@ export default function Layout() {
                 {member?.displayName || user?.displayName}
               </div>
               <div className="text-xs flex items-center gap-1">
-                {isLeader && (
+                {isSuperAdmin && (
+                  <span className="inline-flex items-center gap-1 text-red-400 font-medium">
+                    <Crown size={10} />
+                    超管
+                  </span>
+                )}
+                {isLeader && !isSuperAdmin && (
                   <span className="inline-flex items-center gap-1 text-amber-400">
                     <Crown size={10} />
                     团长
                   </span>
                 )}
-                {member && isLeader && <span className="text-muted-foreground">·</span>}
+                {(isLeader || isSuperAdmin) && member && <span className="text-muted-foreground">·</span>}
                 {member && (
                   <span style={{ color: WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8' }}>
                     {member.wowClassZh}
                   </span>
                 )}
-                {!member && !isLeader && (
+                {!member && !isLeader && !isSuperAdmin && (
                   <span className="text-muted-foreground">未绑定角色</span>
                 )}
               </div>

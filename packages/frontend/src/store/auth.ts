@@ -22,6 +22,7 @@ interface AuthState {
   member: Member | null;
   isLoading: boolean;
   isLeader: boolean;
+  isSuperAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string, displayName: string, wowClass?: string, wowClassZh?: string) => Promise<void>;
   logout: () => void;
@@ -34,6 +35,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   member: null,
   isLoading: false,
   isLeader: false,
+  isSuperAdmin: false,
 
   login: async (username, password) => {
     set({ isLoading: true });
@@ -44,7 +46,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         token: data.token,
         user: data.user,
         member: data.member,
-        isLeader: data.member?.isLeader || false,
+        isLeader: data.isSuperAdmin || data.member?.isLeader || false,
+        isSuperAdmin: data.isSuperAdmin || false,
         isLoading: false,
       });
     } catch (err) {
@@ -63,6 +66,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         user: data.user,
         member: data.member,
         isLeader: data.member?.isLeader || false,
+        isSuperAdmin: false,
         isLoading: false,
       });
     } catch (err) {
@@ -73,7 +77,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     localStorage.removeItem('token');
-    set({ token: null, user: null, member: null, isLeader: false });
+    set({ token: null, user: null, member: null, isLeader: false, isSuperAdmin: false });
   },
 
   loadFromStorage: async () => {
@@ -86,12 +90,13 @@ export const useAuthStore = create<AuthState>((set) => ({
         token,
         user: data.user,
         member: data.member,
-        isLeader: data.member?.isLeader || false,
+        isLeader: data.isSuperAdmin || data.member?.isLeader || false,
+        isSuperAdmin: data.isSuperAdmin || false,
         isLoading: false,
       });
     } catch {
       localStorage.removeItem('token');
-      set({ token: null, user: null, member: null, isLeader: false, isLoading: false });
+      set({ token: null, user: null, member: null, isLeader: false, isSuperAdmin: false, isLoading: false });
     }
   },
 }));
