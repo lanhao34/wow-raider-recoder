@@ -40,8 +40,12 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+// 绑定到 0.0.0.0 允许 Docker 网络访问
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Backend running on 0.0.0.0:${PORT}`);
 });
+
+// 保持进程存活（防止 Node.js 在事件循环为空时退出）
+const keepAlive = setInterval(() => {}, 2147483647);
 
 export default app;
