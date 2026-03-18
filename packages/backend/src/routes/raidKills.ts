@@ -18,13 +18,34 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { scheduleId, raidId, bossId, bossName, difficulty } = req.body;
+    const { scheduleId, raidId, bossId, bossName, difficulty, dropCount: overrideDropCount } = req.body;
 
     // Get participant count from schedule
-    const schedule = await prisma.raidSchedule.findUnique({ where: { id: scheduleId } });
-    const participantCount = schedule
-      ? (JSON.parse(schedule.participantIds) as number[]).length
-      : 0;
+    const schedule = await prisma.raidSchedule.findUnique({
+      where: { id: scheduleId },
+      include: { participants: { where: { status: 'confirmed' } } }
+    });
+    
+    // 优先使用新版 participants 表的出勤人数，兼容旧版 participantIds
+    let participantCount = 0;
+    if (schedule) {
+      if (schedule.participants && schedule.participants.length > 0) {
+        participantCount = schedule.participants.length;
+      } else if (schedule.participantIds) {
+        participantCount = (JSON.parse(schedule.participantIds) as number[]).length;
+      }
+    }
+
+    let finalDropCount = 0;
+    if (overrideDropCount !== undefined && overrideDropCount !== null) {
+      finalDropCount = overrideDropCount;
+    } else {
+      if (difficulty === 'mythic') {
+        finalDropCount = 4;
+      } else if (difficulty === 'normal' || difficulty === 'heroic') {
+        finalDropCount = Math.max(1, Math.floor(participantCount / 5));
+      }
+    }
 
     const kill = await prisma.raidKill.create({
       data: {
@@ -34,7 +55,7 @@ router.post(
         bossName,
         difficulty,
         participantCount,
-        dropCount: 0, // 0 = unlimited, leader manually selects
+        dropCount: finalDropCount,
       },
       include: {
         drops: { include: { distribution: { include: { member: true } } } },

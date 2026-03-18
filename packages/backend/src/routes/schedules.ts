@@ -329,7 +329,7 @@ router.delete('/:id/participants/:memberId', authenticate, async (req: AuthReque
   const isOwner = member.userId === req.userId;
   const user = await prisma.user.findUnique({
     where: { id: req.userId },
-    select: { isAdmin: true, isAdmin: true },
+    select: { isAdmin: true },
   });
   
   const isAdmin = user?.isAdmin || user?.isAdmin;

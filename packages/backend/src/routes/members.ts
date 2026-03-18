@@ -32,6 +32,28 @@ router.get('/', authenticate, requireAdmin, async (req: AuthRequest, res) => {
   })));
 });
 
+// GET /api/members/my - 获取当前用户自己的角色
+router.get('/my', authenticate, async (req: AuthRequest, res) => {
+  const members = await prisma.member.findMany({
+    where: {
+      userId: req.userId,
+    },
+    select: {
+      id: true,
+      displayName: true,
+      wowClass: true,
+      wowClassZh: true,
+      status: true,
+      source: true,
+    },
+    orderBy: {
+      displayName: 'asc',
+    },
+  });
+  
+  res.json(members);
+});
+
 // GET /api/members/public - 获取活跃成员列表（公开，用于报名）
 router.get('/public', authenticate, async (req: AuthRequest, res) => {
   const members = await prisma.member.findMany({
@@ -234,8 +256,8 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
       // 明确要求自己绑定
       targetUserId = req.userId!;
     } else {
-      // 默认创建未绑定角色（可被认领）
-      targetUserId = null;
+      // 默认绑定给该管理员，代替原来的 null
+      targetUserId = req.userId!;
       source = 'created';
     }
   }
@@ -306,8 +328,8 @@ router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res) 
   res.json({ success: true });
 });
 
-// PUT /api/members/:id/set-leader - 指定/取消管理员（仅超管）
-router.put('/:id/set-leader', authenticate, async (req: AuthRequest, res) => {
+// PUT /api/members/:id/set-admin - 指定/取消管理员（仅超管）
+router.put('/:id/set-admin', authenticate, async (req: AuthRequest, res) => {
   const id = parseInt(req.params.id);
   const { isAdmin } = req.body;
   

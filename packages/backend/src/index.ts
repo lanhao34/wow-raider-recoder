@@ -41,7 +41,7 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
 });
 
 // 绑定到 0.0.0.0 允许 Docker 网络访问
-const server = app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Backend running on 0.0.0.0:${PORT}`);
 });
 
