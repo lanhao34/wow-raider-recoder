@@ -111,7 +111,7 @@ router.post('/login', (0, express_validator_1.body)('username').notEmpty().trim(
     const member = await client_1.default.member.findFirst({
         where: { userId: user.id },
     });
-    const token = (0, auth_1.generateToken)(user.id, user.isSuperAdmin || false);
+    const token = (0, auth_1.generateToken)(user.id, user.isSuperAdmin || false, user.isLeader || false);
     return res.json({
         token,
         user: { id: user.id, username: user.username, displayName: user.displayName },
@@ -121,11 +121,12 @@ router.post('/login', (0, express_validator_1.body)('username').notEmpty().trim(
                 displayName: member.displayName,
                 wowClass: member.wowClass,
                 wowClassZh: member.wowClassZh,
-                isLeader: member.isLeader,
+                isLeader: user.isLeader || false, // Return User's isLeader, not Member's
                 status: member.status,
             }
             : null,
         isSuperAdmin: user.isSuperAdmin || false,
+        isLeader: user.isLeader || false,
     });
 });
 // GET /api/auth/me
@@ -148,10 +149,11 @@ router.get('/me', async (req, res) => {
                 displayName: m.displayName,
                 wowClass: m.wowClass,
                 wowClassZh: m.wowClassZh,
-                isLeader: m.isLeader,
+                isLeader: user.isLeader || false, // Return User's isLeader for all members
                 status: m.status,
             })),
             isSuperAdmin: user.isSuperAdmin || false,
+            isLeader: user.isLeader || false,
         });
     }
     catch {

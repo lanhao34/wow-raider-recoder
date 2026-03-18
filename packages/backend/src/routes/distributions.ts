@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../prisma/client';
-import { authenticate, requireLeader, AuthRequest } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
 // POST /api/distributions
 router.post(
   '/',
-  requireLeader,
+  requireAdmin,
   body('dropId').isInt(),
   body('memberId').isInt(),
   body('status').optional().isIn(['assigned', 'received']),
@@ -83,7 +83,7 @@ router.get('/', authenticate, async (req, res) => {
 // PUT /api/distributions/:id (update status)
 router.put(
   '/:id',
-  requireLeader,
+  requireAdmin,
   body('status').isIn(['assigned', 'received']),
   async (req, res) => {
     const errors = validationResult(req);
@@ -100,7 +100,7 @@ router.put(
 );
 
 // DELETE /api/distributions/:id (leader only)
-router.delete('/:id', requireLeader, async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
   await prisma.distribution.delete({ where: { id } });
   return res.status(204).send();

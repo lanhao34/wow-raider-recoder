@@ -23,7 +23,7 @@ interface ImportPreview {
 }
 
 export default function DataManagementPage() {
-  const { isLeader, logout } = useAuthStore();
+  const { isAdmin, logout } = useAuthStore();
   const navigate = useNavigate();
   const [status, setStatus] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [importing, setImporting] = useState(false);
@@ -32,11 +32,11 @@ export default function DataManagementPage() {
   const [importData, setImportData] = useState<ExportData | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!isLeader) {
+  if (!isAdmin) {
     return (
       <div className="card text-center py-12 text-violet-400/50">
         <AlertCircle className="mx-auto mb-3 text-yellow-500/50" size={40} />
-        <p>仅团长可访问数据管理</p>
+        <p>仅管理员可访问数据管理</p>
       </div>
     );
   }

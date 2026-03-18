@@ -1,0 +1,270 @@
+{
+  "version": "12.0",
+  "expansion": "至暗之夜 (The Dark Night)",
+  "season": 1,
+  "lastUpdated": "2026-03-14",
+  "dataSource": "暴雪国服官网",
+  "dataStatus": "部分待验证",
+  
+  "raids": [
+    {
+      "id": "phantom-spire",
+      "name": "虚影尖塔",
+      "nameZh": "虚影尖塔",
+      "location": "虚影风暴",
+      "bossCount": 6,
+      "difficulty": ["随机团队", "普通", "英雄", "史诗", "剧情模式"],
+      "minItemLevel": 220,
+      "releaseDate": "2026-03-19",
+      "bosses": [
+        {
+          "id": "afuzaen",
+          "name": "元首阿福扎恩",
+          "nameZh": "元首阿福扎恩",
+          "order": 1,
+          "description": "元首阿福扎恩发动了一场无情的战役，他不求征服，只求毁灭。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "flahsius",
+          "name": "弗拉希乌斯",
+          "nameZh": "弗拉希乌斯",
+          "order": 2,
+          "description": "弗拉希乌斯是一头诞生于虚影风暴荒原中的巨型掠食者。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "sahadar",
+          "name": "陨落之王萨哈达尔",
+          "nameZh": "陨落之王萨哈达尔",
+          "order": 3,
+          "description": "在背叛萨拉塔斯之后，陨落之王萨哈达尔成了他曾经麾下影卫的阶下囚。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "weigaor-aizolake",
+          "name": "威厄高尔和艾佐拉克",
+          "nameZh": "威厄高尔和艾佐拉克",
+          "order": 4,
+          "description": "威厄高尔和艾佐拉克作为红龙军团的同巢兄弟出生，曾是所有生灵的守护者。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "lightblind-vanguard",
+          "name": "光盲先锋军",
+          "nameZh": "光盲先锋军",
+          "order": 5,
+          "description": "瑟恩、贝莱梅和光血曾是圣光的典范，如今却屈从于自己盲目的狂热。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "cosmic-crown",
+          "name": "宇宙之冕",
+          "nameZh": "宇宙之冕",
+          "order": 6,
+          "description": "在虚影尖塔的顶端，萨拉塔斯集结了她那支来自虚影风暴彼端的黑暗大军。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "dream-rift",
+      "name": "梦境裂隙",
+      "nameZh": "梦境裂隙",
+      "location": "哈籁恩达尔",
+      "bossCount": 1,
+      "difficulty": ["随机团队", "普通", "英雄", "史诗", "剧情模式"],
+      "minItemLevel": 220,
+      "releaseDate": "2026-03-19",
+      "bosses": [
+        {
+          "id": "chimerus",
+          "name": "奇美鲁斯，未梦之神",
+          "nameZh": "奇美鲁斯，未梦之神",
+          "order": 1,
+          "description": "当艾林哈籁被带离她的摇篮时，只留下了痛苦和疯狂，用来塑造裂隙的混沌。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "assault-queldanas",
+      "name": "进军奎尔丹纳斯",
+      "nameZh": "进军奎尔丹纳斯",
+      "location": "奎尔萨拉斯",
+      "bossCount": 2,
+      "difficulty": ["随机团队", "普通", "英雄", "史诗", "剧情模式"],
+      "minItemLevel": 227,
+      "releaseDate": "2026-04-02",
+      "bosses": [
+        {
+          "id": "beilang",
+          "name": "贝洛朗，奥的子嗣",
+          "nameZh": "贝洛朗，奥的子嗣",
+          "order": 1,
+          "description": "贝洛朗是奥最后的子嗣之一，他被抚养长大，成为了奎尔丹纳斯岛的守护者。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        },
+        {
+          "id": "dark-night-falls",
+          "name": "至暗之夜降临",
+          "nameZh": "至暗之夜降临",
+          "order": 2,
+          "description": "鲁拉曾经是圣光的生物，很久以前在阿古斯堕入了虚空。",
+          "loot": {
+            "status": "待收集",
+            "note": "需要 NGA 攻略或游戏内截图",
+            "items": []
+          }
+        }
+      ]
+    }
+  ],
+  
+  "classBuffs": {
+    "status": "待验证",
+    "note": "基于历史版本，12.0 可能调整",
+    "data": {
+      "warrior": {
+        "name": "战斗怒吼",
+        "nameEn": "Battle Shout",
+        "effect": "提高全队攻击力",
+        "verified": false
+      },
+      "paladin": {
+        "name": "虔诚光环",
+        "nameEn": "Devotion Aura",
+        "effect": "提高全队护甲",
+        "verified": false
+      },
+      "hunter": {
+        "name": "待验证",
+        "nameEn": "TBD",
+        "effect": "待验证",
+        "verified": false
+      },
+      "rogue": {
+        "name": "精通毒药",
+        "nameEn": "Master Poisoner",
+        "effect": "提高法术易伤",
+        "verified": false
+      },
+      "priest": {
+        "name": "真言术：韧",
+        "nameEn": "Power Word: Fortitude",
+        "effect": "提高全队耐力",
+        "verified": false
+      },
+      "deathknight": {
+        "name": "待验证",
+        "nameEn": "TBD",
+        "effect": "待验证",
+        "verified": false
+      },
+      "shaman": {
+        "name": "嗜血/英勇",
+        "nameEn": "Bloodlust/Heroism",
+        "effect": "提高全队急速",
+        "verified": false
+      },
+      "mage": {
+        "name": "奥术智慧",
+        "nameEn": "Arcane Intellect",
+        "effect": "提高全队智力",
+        "verified": false
+      },
+      "warlock": {
+        "name": "黑暗意图",
+        "nameEn": "Dark Intent",
+        "effect": "提高急速/精通",
+        "verified": false
+      },
+      "monk": {
+        "name": "幻灭触击",
+        "nameEn": "Mystic Touch",
+        "effect": "提高物理易伤",
+        "verified": false
+      },
+      "druid": {
+        "name": "野性印记",
+        "nameEn": "Mark of the Wild",
+        "effect": "提高全属性",
+        "verified": false
+      },
+      "demonhunter": {
+        "name": "混沌烙印",
+        "nameEn": "Chaos Brand",
+        "effect": "提高魔法易伤",
+        "verified": false
+      },
+      "evoker": {
+        "name": "青铜祝福",
+        "nameEn": "Blessing of the Bronze",
+        "effect": "提高主属性",
+        "verified": true,
+        "source": "NGA 蓝帖"
+      }
+    }
+  },
+  
+  "raidSizes": {
+    "status": "待验证",
+    "note": "基于现代 WoW 标准，12.0 可能调整",
+    "mythic": {
+      "fixed": 20,
+      "verified": false
+    },
+    "heroic": {
+      "flexible": {
+        "min": 10,
+        "max": 30
+      },
+      "verified": false
+    },
+    "normal": {
+      "flexible": {
+        "min": 10,
+        "max": 30
+      },
+      "verified": false
+    }
+  },
+  
+  "sourceLinks": {
+    "blizzard": "https://wow.blizzard.cn/news/24264416/index.html",
+    "nga": "待补充",
+    "wowhead": "因地区限制无法访问"
+  }
+}

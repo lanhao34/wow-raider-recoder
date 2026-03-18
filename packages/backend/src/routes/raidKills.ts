@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../prisma/client';
-import { requireLeader, AuthRequest } from '../middleware/auth';
+import { requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
 // POST /api/raid-kills — simplified: no drop count calculation
 router.post(
   '/',
-  requireLeader,
+  requireAdmin,
   body('scheduleId').isInt(),
   body('raidId').notEmpty(),
   body('bossId').notEmpty(),

@@ -12,17 +12,17 @@ interface Member {
   displayName: string;
   wowClass: string;
   wowClassZh: string;
-  isLeader: boolean;
+  tags: string[];
   status: string;
 }
 
 interface AuthState {
   token: string | null;
   user: User | null;
-  member: Member | null;
+  member: Member | null; // 当前选中的角色（第一个）
+  members: Member[] | null; // 所有角色
   isLoading: boolean;
-  isLeader: boolean;
-  isSuperAdmin: boolean;
+  isAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string, displayName?: string) => Promise<void>;
   logout: () => void;
@@ -33,9 +33,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   token: null,
   user: null,
   member: null,
+  members: [],
   isLoading: false,
-  isLeader: false,
-  isSuperAdmin: false,
+  isAdmin: false,
 
   login: async (username, password) => {
     set({ isLoading: true });
@@ -46,8 +46,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         token: data.token,
         user: data.user,
         member: data.member,
-        isLeader: data.isSuperAdmin || data.member?.isLeader || false,
-        isSuperAdmin: data.isSuperAdmin || false,
+        members: data.members || [],
+        isAdmin: data.isAdmin || false,
         isLoading: false,
       });
     } catch (err) {
@@ -65,8 +65,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         token: data.token,
         user: data.user,
         member: data.member,
-        isLeader: false,
-        isSuperAdmin: false,
+        members: [],
+        isAdmin: false,
         isLoading: false,
       });
     } catch (err) {
@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   logout: () => {
     localStorage.removeItem('token');
-    set({ token: null, user: null, member: null, isLeader: false, isSuperAdmin: false });
+    set({ token: null, user: null, member: null, members: [], isAdmin: false });
   },
 
   loadFromStorage: async () => {
@@ -86,17 +86,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true });
     try {
       const data = await authApi.me();
+      const membersList = data.members || [];
       set({
         token,
         user: data.user,
-        member: data.member,
-        isLeader: data.isSuperAdmin || data.member?.isLeader || false,
-        isSuperAdmin: data.isSuperAdmin || false,
+        member: membersList[0] || null,
+        members: membersList,
+        isAdmin: data.isAdmin || false,
         isLoading: false,
       });
     } catch {
       localStorage.removeItem('token');
-      set({ token: null, user: null, member: null, isLeader: false, isSuperAdmin: false, isLoading: false });
+      set({ token: null, user: null, member: null, members: [], isAdmin: false, isLoading: false });
     }
   },
 }));

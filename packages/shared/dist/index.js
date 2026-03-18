@@ -14,6 +14,10 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SLOT_NAMES = void 0;
 __exportStar(require("./types"), exports);
 __exportStar(require("./equipmentData"), exports);
+// Re-export SLOT_NAMES from types (not from equipmentData to avoid conflict)
+var types_1 = require("./types");
+Object.defineProperty(exports, "SLOT_NAMES", { enumerable: true, get: function () { return types_1.SLOT_NAMES; } });
 //# sourceMappingURL=index.js.map

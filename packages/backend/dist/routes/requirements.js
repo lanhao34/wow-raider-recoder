@@ -19,15 +19,23 @@ router.get('/', auth_1.authenticate, async (req, res) => {
     return res.json(requirements);
 });
 // POST /api/requirements
-router.post('/', auth_1.authenticate, (0, express_validator_1.body)('itemId').notEmpty(), (0, express_validator_1.body)('itemName').notEmpty(), (0, express_validator_1.body)('priority').isIn(['bis', 'high', 'medium', 'low']), (0, express_validator_1.body)('note').optional().isString(), async (req, res) => {
+router.post('/', auth_1.authenticate, (0, express_validator_1.body)('itemId').notEmpty(), (0, express_validator_1.body)('itemName').notEmpty(), (0, express_validator_1.body)('priority').isIn(['bis', 'high', 'medium', 'low']), (0, express_validator_1.body)('note').optional().isString(), (0, express_validator_1.body)('memberId').optional().isInt(), async (req, res) => {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty())
         return res.status(400).json({ errors: errors.array() });
-    const { itemId, itemName, priority, note } = req.body;
+    const { itemId, itemName, priority, note, memberId } = req.body;
     // Find member linked to current user
-    const member = await client_1.default.member.findFirst({ where: { userId: req.userId } });
-    if (!member)
-        return res.status(403).json({ error: 'No member profile linked to your account' });
+    const member = await client_1.default.member.findFirst({
+        where: memberId
+            ? { id: memberId, userId: req.userId } // 如果指定了 memberId，验证属于当前用户
+            : { userId: req.userId } // 否则使用第一个角色
+    });
+    if (!member) {
+        return res.status(403).json({
+            error: '请先创建或认领角色，然后才能登记装备需求',
+            code: 'NO_MEMBER'
+        });
+    }
     const requirement = await client_1.default.requirement.upsert({
         where: { memberId_itemId: { memberId: member.id, itemId } },
         update: { priority, note },
@@ -49,7 +57,9 @@ router.delete('/:id', auth_1.authenticate, async (req, res) => {
     const member = await client_1.default.member.findFirst({ where: { userId: req.userId } });
     if (!member)
         return res.status(403).json({ error: 'Forbidden' });
-    if (requirement.memberId !== member.id && !member.isLeader) {
+    // Check if user is leader (admin)
+    const user = await client_1.default.user.findUnique({ where: { id: req.userId }, select: { isLeader: true } });
+    if (requirement.memberId !== member.id && !user?.isLeader) {
         return res.status(403).json({ error: 'Forbidden' });
     }
     await client_1.default.requirement.delete({ where: { id } });

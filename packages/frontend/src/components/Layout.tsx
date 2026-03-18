@@ -3,11 +3,11 @@ import { useAuthStore } from '../store/auth';
 import { WOW_CLASS_COLORS } from '@guild/shared';
 import type { WowClass } from '@guild/shared';
 import {
-  CalendarDays, BookOpen, ListChecks, Shield, Users, Database, LogOut, Sword, Crown
+  CalendarDays, ListChecks, Shield, Users, Database, LogOut, Sword, Crown
 } from 'lucide-react';
 
 export default function Layout() {
-  const { user, member, isLeader, isSuperAdmin, logout } = useAuthStore();
+  const { user, member, members, isAdmin, logout } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -16,16 +16,15 @@ export default function Layout() {
   };
 
   const navItems = [
-    { to: '/calendar', label: '日程日历', icon: CalendarDays },
+    { to: '/calendar', label: '活动日历', icon: CalendarDays },
     // 没有角色的用户显示"认领角色"，有角色的显示"我的需求"
     ...(!member ? [
-      { to: '/claim', label: '认领角色', icon: Users, highlight: true },
+      { to: '/claim', label: '我的角色', icon: Users, highlight: true },
     ] : [
-      { to: '/requirements', label: '我的需求', icon: ListChecks },
+      { to: '/requirements', label: '装备需求', icon: ListChecks },
       { to: '/tier', label: '套装追踪', icon: Shield },
     ]),
-    { to: '/equipment', label: '装备手册', icon: BookOpen },
-    ...(isLeader ? [
+    ...(isAdmin ? [
       { to: '/members', label: '成员管理', icon: Users },
       { to: '/data', label: '数据管理', icon: Database },
     ] : []),
@@ -76,34 +75,32 @@ export default function Layout() {
             <div 
               className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-slate-950"
               style={{ 
-                backgroundColor: member ? WOW_CLASS_COLORS[member.wowClass as WowClass] : '#94a3b8',
+                backgroundColor: isAdmin ? '#a855f7' : '#7c3aed',
                 boxShadow: '0 0 10px rgba(0,0,0,0.3)'
               }}
             >
-              {(member?.displayName || user?.displayName || '?').charAt(0)}
+              {(user?.displayName || user?.username || '?').charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-foreground truncate">
-                {member?.displayName || user?.displayName}
+                {user?.displayName || user?.username}
               </div>
               <div className="text-xs flex items-center gap-2">
-                {/* 权限标识 - 用小圆点颜色区分，不显示文字 */}
-                {isSuperAdmin && (
-                  <div className="w-2 h-2 rounded-full bg-red-500" title="超级管理员" />
-                )}
-                {isLeader && !isSuperAdmin && (
-                  <div className="w-2 h-2 rounded-full bg-amber-500" title="团长" />
-                )}
-                {/* 职业 */}
-                {member && (
-                  <span style={{ color: WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8' }}>
-                    {member.wowClassZh}
+                {/* 权限标识 */}
+                {isAdmin && (
+                  <span className="flex items-center gap-1 text-purple-400">
+                    <Shield size={10} /> 管理员
                   </span>
                 )}
-                {!member && !isLeader && !isSuperAdmin && (
-                  <span className="text-muted-foreground">未绑定角色</span>
+                {!isAdmin && (
+                  <span className="text-muted-foreground">普通用户</span>
                 )}
               </div>
+              {members && members.length > 0 && (
+                <div className="text-xs text-[#475569] mt-1">
+                  {members.length} 个角色
+                </div>
+              )}
             </div>
           </div>
           <button 

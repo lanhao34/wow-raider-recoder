@@ -4,101 +4,317 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const express_validator_1 = require("express-validator");
 const client_1 = __importDefault(require("../prisma/client"));
 const auth_1 = require("../middleware/auth");
-const weekId_1 = require("../utils/weekId");
 const router = (0, express_1.Router)();
-// GET /api/schedules
+// GET /api/schedules - 获取活动列表
 router.get('/', auth_1.authenticate, async (req, res) => {
-    const { week, month } = req.query;
-    const where = {};
-    if (week)
-        where.weekId = week;
-    else if (month)
-        where.date = { startsWith: month };
+    const { week, month, raidId, difficulty } = req.query;
     const schedules = await client_1.default.raidSchedule.findMany({
-        where,
+        where: {
+            ...(week ? { weekId: week } : {}),
+            ...(raidId ? { raidId } : {}),
+            ...(difficulty ? { difficulty } : {}),
+        },
         include: {
-            raids: true,
-            kills: {
+            creator: {
+                select: {
+                    username: true,
+                    displayName: true,
+                },
+            },
+            participants: {
                 include: {
-                    drops: { include: { distribution: { include: { member: true } } } },
+                    member: {
+                        select: {
+                            displayName: true,
+                            wowClass: true,
+                            wowClassZh: true,
+                        },
+                    },
                 },
             },
         },
-        orderBy: { date: 'desc' },
+        orderBy: {
+            date: 'asc',
+        },
     });
-    return res.json(schedules);
+    res.json(schedules);
 });
-// POST /api/schedules
-router.post('/', auth_1.requireLeader, (0, express_validator_1.body)('date').matches(/^\d{4}-\d{2}-\d{2}$/), (0, express_validator_1.body)('note').optional().isString(), async (req, res) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty())
-        return res.status(400).json({ errors: errors.array() });
-    const { date, note } = req.body;
-    const weekId = (0, weekId_1.getWeekId)(new Date(date));
-    const existing = await client_1.default.raidSchedule.findFirst({ where: { date } });
-    if (existing)
-        return res.status(400).json({ error: 'Schedule already exists for this date' });
+// POST /api/schedules - 创建活动（仅管理员）
+router.post('/', auth_1.authenticate, auth_1.requireLeader, async (req, res) => {
+    const { date, raidId = 'sunwell', raidName = 'Sunwell Plateau', raidNameZh = '太阳井高地', difficulty = 'normal', teamName, maxPlayers = 20, maxSubstitutes = 10, teamSetup, note, } = req.body;
+    if (!date) {
+        return res.status(400).json({ error: '缺少必要参数：日期' });
+    }
+    // 计算 weekId
+    const eventDate = new Date(date);
+    const dayNum = eventDate.getDay() || 7;
+    eventDate.setDate(eventDate.getDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(eventDate.getFullYear(), 0, 1));
+    const weekNo = Math.ceil((((eventDate.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+    const weekId = `${eventDate.getFullYear()}-W${String(weekNo).padStart(2, '0')}`;
     const schedule = await client_1.default.raidSchedule.create({
-        data: { date, weekId, note, createdBy: req.userId, participantIds: '[]' },
-        include: { raids: true, kills: { include: { drops: true } } },
+        data: {
+            date,
+            weekId,
+            raidId,
+            raidName,
+            raidNameZh,
+            difficulty,
+            teamName: teamName || null,
+            maxPlayers,
+            maxSubstitutes,
+            teamSetup: teamSetup ? JSON.stringify(teamSetup) : null,
+            note: note || null,
+            createdBy: req.userId,
+            participantIds: '[]',
+        },
     });
-    return res.status(201).json(schedule);
+    res.status(201).json(schedule);
 });
-// GET /api/schedules/:id
+// GET /api/schedules/:id - 获取活动详情
 router.get('/:id', auth_1.authenticate, async (req, res) => {
     const id = parseInt(req.params.id);
     const schedule = await client_1.default.raidSchedule.findUnique({
         where: { id },
         include: {
-            raids: true,
-            kills: {
+            creator: {
+                select: {
+                    username: true,
+                    displayName: true,
+                },
+            },
+            participants: {
                 include: {
-                    drops: {
-                        include: { distribution: { include: { member: true } } },
+                    member: {
+                        select: {
+                            displayName: true,
+                            wowClass: true,
+                            wowClassZh: true,
+                            userId: true,
+                        },
                     },
                 },
-                orderBy: { createdAt: 'asc' },
+                orderBy: {
+                    slot: 'asc',
+                },
+            },
+            raids: true,
+        },
+    });
+    if (!schedule) {
+        return res.status(404).json({ error: '活动不存在' });
+    }
+    res.json(schedule);
+});
+// PUT /api/schedules/:id - 更新活动（仅管理员）
+router.put('/:id', auth_1.authenticate, auth_1.requireLeader, async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { date, raidId, raidName, raidNameZh, difficulty, teamName, maxPlayers, maxSubstitutes, teamSetup, note, } = req.body;
+    const schedule = await client_1.default.raidSchedule.findUnique({ where: { id } });
+    if (!schedule) {
+        return res.status(404).json({ error: '活动不存在' });
+    }
+    const updated = await client_1.default.raidSchedule.update({
+        where: { id },
+        data: {
+            ...(date ? { date } : {}),
+            ...(raidId ? { raidId } : {}),
+            ...(raidName ? { raidName } : {}),
+            ...(raidNameZh ? { raidNameZh } : {}),
+            ...(difficulty ? { difficulty } : {}),
+            ...(teamName !== undefined ? { teamName } : {}),
+            ...(maxPlayers !== undefined ? { maxPlayers } : {}),
+            ...(maxSubstitutes !== undefined ? { maxSubstitutes } : {}),
+            ...(teamSetup !== undefined ? { teamSetup: JSON.stringify(teamSetup) } : {}),
+            ...(note !== undefined ? { note } : {}),
+        },
+    });
+    res.json(updated);
+});
+// DELETE /api/schedules/:id - 删除活动（仅管理员）
+router.delete('/:id', auth_1.authenticate, auth_1.requireLeader, async (req, res) => {
+    const id = parseInt(req.params.id);
+    await client_1.default.raidSchedule.delete({
+        where: { id },
+    });
+    res.json({ success: true });
+});
+// POST /api/schedules/:id/participants - 报名活动
+router.post('/:id/participants', auth_1.authenticate, async (req, res) => {
+    const scheduleId = parseInt(req.params.id);
+    const { memberId, status = 'pending' } = req.body;
+    if (!memberId) {
+        return res.status(400).json({ error: '缺少角色 ID' });
+    }
+    // 验证角色属于当前用户
+    const member = await client_1.default.member.findFirst({
+        where: { id: memberId, userId: req.userId },
+    });
+    if (!member) {
+        return res.status(403).json({ error: '无权为该角色报名' });
+    }
+    // 检查是否已报名
+    const existing = await client_1.default.raidParticipant.findUnique({
+        where: {
+            scheduleId_memberId: {
+                scheduleId,
+                memberId,
             },
         },
     });
-    if (!schedule)
-        return res.status(404).json({ error: 'Schedule not found' });
-    return res.json(schedule);
-});
-// PUT /api/schedules/:id/participants — update participant member IDs
-router.put('/:id/participants', auth_1.requireLeader, (0, express_validator_1.body)('memberIds').isArray(), async (req, res) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty())
-        return res.status(400).json({ errors: errors.array() });
-    const id = parseInt(req.params.id);
-    const { memberIds } = req.body;
-    const schedule = await client_1.default.raidSchedule.update({
-        where: { id },
-        data: { participantIds: JSON.stringify(memberIds) },
+    if (existing) {
+        return res.status(400).json({ error: '已报名该活动' });
+    }
+    // 检查人数限制
+    const schedule = await client_1.default.raidSchedule.findUnique({
+        where: { id: scheduleId },
+        include: {
+            participants: true,
+        },
     });
-    return res.json({ participantIds: JSON.parse(schedule.participantIds) });
+    if (!schedule) {
+        return res.status(404).json({ error: '活动不存在' });
+    }
+    const confirmedCount = schedule.participants.filter(p => p.status === 'confirmed').length;
+    const substituteCount = schedule.participants.filter(p => p.status === 'substitute').length;
+    let finalStatus = status;
+    let slot = null;
+    if (status === 'confirmed' || status === 'pending') {
+        if (confirmedCount >= schedule.maxPlayers) {
+            // 正选已满，询问是否接受替补
+            return res.status(400).json({
+                error: '正选已满，是否接受替补？',
+                code: 'FULL_TRY_SUBSTITUTE'
+            });
+        }
+        finalStatus = 'confirmed';
+        slot = confirmedCount;
+    }
+    else if (status === 'substitute') {
+        if (substituteCount >= schedule.maxSubstitutes) {
+            return res.status(400).json({ error: '替补已满' });
+        }
+        slot = schedule.maxPlayers + substituteCount;
+    }
+    const participant = await client_1.default.raidParticipant.create({
+        data: {
+            scheduleId,
+            memberId,
+            status: finalStatus,
+            slot,
+        },
+        include: {
+            member: {
+                select: {
+                    displayName: true,
+                    wowClass: true,
+                    wowClassZh: true,
+                },
+            },
+        },
+    });
+    res.status(201).json(participant);
 });
-// POST /api/schedules/:id/raids
-router.post('/:id/raids', auth_1.requireLeader, (0, express_validator_1.body)('raidId').notEmpty(), (0, express_validator_1.body)('raidName').notEmpty(), (0, express_validator_1.body)('difficulty').isIn(['normal', 'heroic', 'mythic']), async (req, res) => {
-    const errors = (0, express_validator_1.validationResult)(req);
-    if (!errors.isEmpty())
-        return res.status(400).json({ errors: errors.array() });
+// PUT /api/schedules/:id/participants/:memberId - 更新报名状态（仅管理员）
+router.put('/:id/participants/:memberId', auth_1.authenticate, auth_1.requireLeader, async (req, res) => {
     const scheduleId = parseInt(req.params.id);
-    const { raidId, raidName, difficulty } = req.body;
-    const scheduleRaid = await client_1.default.scheduleRaid.upsert({
-        where: { scheduleId_raidId_difficulty: { scheduleId, raidId, difficulty } },
-        update: {},
-        create: { scheduleId, raidId, raidName, difficulty },
+    const memberId = parseInt(req.params.memberId);
+    const { status, slot, checkedIn } = req.body;
+    const participant = await client_1.default.raidParticipant.findUnique({
+        where: {
+            scheduleId_memberId: {
+                scheduleId,
+                memberId,
+            },
+        },
     });
-    return res.status(201).json(scheduleRaid);
+    if (!participant) {
+        return res.status(404).json({ error: '报名记录不存在' });
+    }
+    const updated = await client_1.default.raidParticipant.update({
+        where: {
+            scheduleId_memberId: {
+                scheduleId,
+                memberId,
+            },
+        },
+        data: {
+            ...(status ? { status } : {}),
+            ...(slot !== undefined ? { slot } : {}),
+            ...(checkedIn !== undefined ? { checkedIn } : {}),
+        },
+        include: {
+            member: {
+                select: {
+                    displayName: true,
+                    wowClass: true,
+                    wowClassZh: true,
+                },
+            },
+        },
+    });
+    res.json(updated);
 });
-// DELETE /api/schedules/:id/raids/:raidRecordId
-router.delete('/:id/raids/:raidRecordId', auth_1.requireLeader, async (req, res) => {
-    const raidRecordId = parseInt(req.params.raidRecordId);
-    await client_1.default.scheduleRaid.delete({ where: { id: raidRecordId } });
-    return res.status(204).send();
+// DELETE /api/schedules/:id/participants/:memberId - 取消报名
+router.delete('/:id/participants/:memberId', auth_1.authenticate, async (req, res) => {
+    const scheduleId = parseInt(req.params.id);
+    const memberId = parseInt(req.params.memberId);
+    // 验证角色属于当前用户，或者是管理员
+    const member = await client_1.default.member.findFirst({
+        where: { id: memberId },
+    });
+    if (!member) {
+        return res.status(404).json({ error: '角色不存在' });
+    }
+    const isOwner = member.userId === req.userId;
+    const user = await client_1.default.user.findUnique({
+        where: { id: req.userId },
+        select: { isLeader: true, isSuperAdmin: true },
+    });
+    const isAdmin = user?.isLeader || user?.isSuperAdmin;
+    if (!isOwner && !isAdmin) {
+        return res.status(403).json({ error: '无权取消该报名' });
+    }
+    await client_1.default.raidParticipant.delete({
+        where: {
+            scheduleId_memberId: {
+                scheduleId,
+                memberId,
+            },
+        },
+    });
+    res.json({ success: true });
+});
+// POST /api/schedules/:id/checkin - 批量签到（仅管理员）
+router.post('/:id/checkin', auth_1.authenticate, auth_1.requireLeader, async (req, res) => {
+    const scheduleId = parseInt(req.params.id);
+    const { checkedInMemberIds, absentMemberIds, leaveMemberIds } = req.body;
+    // 更新签到状态
+    const updates = await Promise.all([
+        // 标记为出勤
+        ...(checkedInMemberIds || []).map(memberId => client_1.default.raidParticipant.update({
+            where: {
+                scheduleId_memberId: { scheduleId, memberId },
+            },
+            data: { checkedIn: true, status: 'confirmed' },
+        })),
+        // 标记为缺勤
+        ...(absentMemberIds || []).map(memberId => client_1.default.raidParticipant.update({
+            where: {
+                scheduleId_memberId: { scheduleId, memberId },
+            },
+            data: { checkedIn: false, status: 'absent' },
+        })),
+        // 标记为请假
+        ...(leaveMemberIds || []).map(memberId => client_1.default.raidParticipant.update({
+            where: {
+                scheduleId_memberId: { scheduleId, memberId },
+            },
+            data: { checkedIn: false, status: 'leave' },
+        })),
+    ]);
+    res.json({ success: true, updates });
 });
 exports.default = router;

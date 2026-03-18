@@ -38,10 +38,12 @@ export const authApi = {
 // Members
 export const membersApi = {
   list: () => api.get('/members').then((r) => r.data),
+  publicList: () => api.get('/members/public').then((r) => r.data),
+  stats: () => api.get('/members/stats').then((r) => r.data),
   create: (data: object) => api.post('/members', data).then((r) => r.data),
   update: (id: number, data: object) => api.put(`/members/${id}`, data).then((r) => r.data),
   delete: (id: number) => api.delete(`/members/${id}`),
-  setLeader: (id: number, isLeader: boolean) => api.put(`/members/${id}/leader`, { isLeader }).then((r) => r.data),
+  setAdmin: (id: number, isAdmin: boolean) => api.put(`/members/${id}/set-admin`, { isAdmin }).then((r) => r.data),
   tierProgress: () => api.get('/requirements/tier-progress').then((r) => r.data),
 };
 
@@ -98,7 +100,7 @@ export const distributionsApi = {
 export const requirementsApi = {
   list: (memberId?: number) =>
     api.get('/requirements', { params: memberId ? { memberId } : undefined }).then((r) => r.data),
-  create: (data: { itemId: string; itemName: string; priority: string; note?: string }) =>
+  create: (data: { memberId?: number; itemId: string; itemName: string; priority: string; note?: string }) =>
     api.post('/requirements', data).then((r) => r.data),
   delete: (id: number) => api.delete(`/requirements/${id}`),
 };

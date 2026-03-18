@@ -8,31 +8,33 @@ datasource db {
 }
 
 model User {
-  id            Int            @id @default(autoincrement())
-  username      String         @unique
-  passwordHash  String         @map("password_hash")
-  displayName   String         @map("display_name")
-  isSuperAdmin  Boolean        @default(false) @map("is_super_admin")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  members       Member[]
-  schedules     RaidSchedule[]
+  id           Int            @id @default(autoincrement())
+  username     String         @unique
+  passwordHash String         @map("password_hash")
+  displayName  String         @map("display_name")
+  isAdmin      Boolean        @default(false) @map("is_admin")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  members      Member[]
+  schedules    RaidSchedule[]
 
   @@map("users")
 }
 
 model Member {
-  id            Int            @id @default(autoincrement())
-  userId        Int?           @map("user_id")
-  displayName   String         @map("display_name")
-  wowClass      String         @map("wow_class")
-  wowClassZh    String         @map("wow_class_zh")
-  isLeader      Boolean        @default(false) @map("is_leader")
-  status        String         @default("active")
-  isClaimed     Boolean        @default(false) @map("is_claimed")
-  createdAt     DateTime       @default(now()) @map("created_at")
-  distributions Distribution[]
-  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-  requirements  Requirement[]
+  id               Int               @id @default(autoincrement())
+  userId           Int?              @map("user_id")
+  displayName      String            @map("display_name")
+  wowClass         String            @map("wow_class")
+  wowClassZh       String            @map("wow_class_zh")
+  tags             String            @default("[]") // JSON 数组，如 ["一团", "大号"]
+  isDisabled       Boolean           @default(false) @map("is_disabled")
+  status           String            @default("active")
+  source           String            @default("created") @map("source") // 'claimed' | 'created'
+  createdAt        DateTime          @default(now()) @map("created_at")
+  distributions    Distribution[]
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requirements     Requirement[]
+  raidParticipants RaidParticipant[]
 
   @@map("members")
 }
@@ -49,7 +51,39 @@ model RaidSchedule {
   creator        User           @relation(fields: [createdBy], references: [id])
   raids          ScheduleRaid[]
 
+  // 活动报名相关字段
+  raidId         String  @map("raid_id") // 副本 ID
+  raidName       String  @map("raid_name") // 副本名称
+  raidNameZh     String? @map("raid_name_zh") // 副本中文名
+  difficulty     String // normal/heroic/mythic
+  teamName       String? @map("team_name") // 团名（一团/二团）
+  maxPlayers     Int     @default(20) @map("max_players") // 正选人数上限
+  maxSubstitutes Int     @default(10) @map("max_substitutes") // 替补上限
+
+  // 团队框架预设 (JSON 格式存储)
+  // 格式：{"slots": [{"type": "T", "class": "warrior", "required": true}, ...], "buffs": ["wisdom", "mark"]}
+  teamSetup String? @map("team_setup")
+
+  participants RaidParticipant[]
+
   @@map("raid_schedules")
+}
+
+// 活动报名
+model RaidParticipant {
+  id         Int      @id @default(autoincrement())
+  scheduleId Int      @map("schedule_id")
+  memberId   Int      @map("member_id")
+  status     String   @default("pending") // pending/confirmed/substitute/absent/leave
+  slot       Int? // 在团队框架中的位置 (0-19 正选，20-29 替补)
+  checkedIn  Boolean  @default(false) @map("checked_in")
+  signedUpAt DateTime @default(now()) @map("signed_up_at")
+
+  schedule RaidSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  member   Member       @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, memberId])
+  @@map("raid_participants")
 }
 
 model ScheduleRaid {

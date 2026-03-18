@@ -20,6 +20,7 @@ function authenticate(req, res, next) {
         const payload = jsonwebtoken_1.default.verify(token, JWT_SECRET);
         req.userId = payload.userId;
         req.isSuperAdmin = payload.isSuperAdmin || false;
+        req.isLeader = payload.isLeader || false;
         next();
     }
     catch {
@@ -33,14 +34,15 @@ async function requireLeader(req, res, next) {
             req.isLeader = true;
             return next();
         }
-        const member = await client_1.default.member.findFirst({
-            where: { userId: req.userId, isLeader: true },
+        // Check User.isLeader field
+        const user = await client_1.default.user.findUnique({
+            where: { id: req.userId },
+            select: { isLeader: true },
         });
-        if (!member) {
+        if (!user?.isLeader) {
             return res.status(403).json({ error: 'Leader access required' });
         }
         req.isLeader = true;
-        req.memberId = member.id;
         next();
     });
 }
@@ -51,16 +53,17 @@ async function loadMember(req, _res, next) {
             req.isLeader = true;
             return next();
         }
-        const member = await client_1.default.member.findFirst({
-            where: { userId: req.userId },
+        // Load User.isLeader
+        const user = await client_1.default.user.findUnique({
+            where: { id: req.userId },
+            select: { isLeader: true },
         });
-        if (member) {
-            req.isLeader = member.isLeader;
-            req.memberId = member.id;
+        if (user) {
+            req.isLeader = user.isLeader;
         }
     }
     next();
 }
-function generateToken(userId, isSuperAdmin = false) {
-    return jsonwebtoken_1.default.sign({ userId, isSuperAdmin }, JWT_SECRET, { expiresIn: '30d' });
+function generateToken(userId, isSuperAdmin = false, isLeader = false) {
+    return jsonwebtoken_1.default.sign({ userId, isSuperAdmin, isLeader }, JWT_SECRET, { expiresIn: '30d' });
 }

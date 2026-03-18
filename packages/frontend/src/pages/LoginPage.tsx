@@ -64,6 +64,7 @@ export default function LoginPage() {
     try {
       if (tab === 'login') {
         await login(username, password);
+        navigate('/'); // 登录后跳转到主页
       } else {
         // 注册时不创建角色，displayName 使用用户名
         await register(username, password, username);

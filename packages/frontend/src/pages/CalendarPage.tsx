@@ -29,7 +29,7 @@ export default function CalendarPage() {
   const [stats, setStats] = useState<Stats>({ totalSchedules: 0, totalKills: 0, totalDrops: 0, totalDistributions: 0 });
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { isLeader } = useAuthStore();
+  const { isAdmin } = useAuthStore();
   const navigate = useNavigate();
 
   const monthStr = format(currentMonth, 'yyyy-MM');
@@ -69,7 +69,7 @@ export default function CalendarPage() {
       navigate(`/schedules/${existing.id}`);
       return;
     }
-    if (!isLeader) return;
+    if (!isAdmin) return;
     
     setCreating(true);
     try {
@@ -204,7 +204,7 @@ export default function CalendarPage() {
                   ${!isCurrentMonth ? 'bg-muted/30' : 'bg-card'}
                   ${schedule
                     ? 'cursor-pointer hover:bg-primary/10'
-                    : isLeader
+                    : isAdmin
                       ? 'cursor-pointer hover:bg-muted'
                       : 'cursor-default'
                   }
@@ -234,7 +234,7 @@ export default function CalendarPage() {
                   </div>
                 )}
                 
-                {isLeader && !schedule && isCurrentMonth && (
+                {isAdmin && !schedule && isCurrentMonth && (
                   <div className="opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center h-12">
                     <Plus size={16} className="text-muted-foreground/50" />
                   </div>
@@ -259,7 +259,7 @@ export default function CalendarPage() {
           <div className="w-3 h-3 rounded bg-muted/50" />
           其他月份
         </div>
-        {isLeader && <span className="text-primary">点击空白日期可创建日程</span>}
+        {isAdmin && <span className="text-primary">点击空白日期可创建日程</span>}
       </div>
 
       {/* Loading Modal */}

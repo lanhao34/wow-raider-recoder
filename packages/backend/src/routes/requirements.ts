@@ -24,15 +24,26 @@ router.post(
   body('itemName').notEmpty(),
   body('priority').isIn(['bis', 'high', 'medium', 'low']),
   body('note').optional().isString(),
+  body('memberId').optional().isInt(),
   async (req: AuthRequest, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { itemId, itemName, priority, note } = req.body;
+    const { itemId, itemName, priority, note, memberId } = req.body;
 
     // Find member linked to current user
-    const member = await prisma.member.findFirst({ where: { userId: req.userId } });
-    if (!member) return res.status(403).json({ error: 'No member profile linked to your account' });
+    const member = await prisma.member.findFirst({ 
+      where: memberId 
+        ? { id: memberId, userId: req.userId } // 如果指定了 memberId，验证属于当前用户
+        : { userId: req.userId } // 否则使用第一个角色
+    });
+    
+    if (!member) {
+      return res.status(403).json({ 
+        error: '请先创建或认领角色，然后才能登记装备需求',
+        code: 'NO_MEMBER'
+      });
+    }
 
     const requirement = await prisma.requirement.upsert({
       where: { memberId_itemId: { memberId: member.id, itemId } },
@@ -56,7 +67,10 @@ router.delete('/:id', authenticate, async (req: AuthRequest, res) => {
   // Only member themselves or leader can delete
   const member = await prisma.member.findFirst({ where: { userId: req.userId } });
   if (!member) return res.status(403).json({ error: 'Forbidden' });
-  if (requirement.memberId !== member.id && !member.isLeader) {
+  
+  // Check if user is leader (admin)
+  const user = await prisma.user.findUnique({ where: { id: req.userId }, select: { isAdmin: true } });
+  if (requirement.memberId !== member.id && !user?.isAdmin) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 

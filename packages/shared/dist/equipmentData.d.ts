@@ -1,20 +1,45 @@
-import type { Raid } from './types';
-export declare const RAIDS: Raid[];
-export declare function findRaid(raidId: string): Raid | undefined;
-export declare function findBoss(raidId: string, bossId: string): import("./types").Boss | undefined;
-export declare function findItem(itemId: string): import("./types").Item | undefined;
-export declare function getAllItems(): {
-    item: any;
-    bossId: string;
+export interface WoWItem {
+    id: string;
+    name: string;
+    nameZh?: string;
+    slot: string;
+    quality: string;
+    itemLevel: number;
+    isTier?: boolean;
+    tierSet?: string;
+    armorType?: string;
+}
+export interface WoWBoss {
+    id: string;
+    name: string;
+    nameZh?: string;
+    loot: WoWItem[];
+}
+export interface WoWRaid {
+    id: string;
+    name: string;
+    nameZh?: string;
+    expansion: string;
+    bosses: WoWBoss[];
+}
+export declare const RAIDS: WoWRaid[];
+export declare const CLASS_ARMOR_TYPES: Record<string, string[]>;
+export declare const ALL_ITEMS: {
     raidId: string;
+    raidName: string;
+    bossId: string;
+    bossName: string;
+    id: string;
+    name: string;
+    nameZh?: string;
+    slot: string;
+    quality: string;
+    itemLevel: number;
+    isTier?: boolean;
+    tierSet?: string;
+    armorType?: string;
 }[];
-export declare function getItemById(itemId: string): {
-    item: any;
-    bossId: string;
-    raidId: string;
-} | null;
-export declare function getBossById(bossId: string): {
-    boss: any;
-    raidId: string;
-} | null;
+export declare const QUALITY_COLORS: Record<string, string>;
+export declare const QUALITY_BORDERS: Record<string, string>;
+export declare const QUALITY_BG: Record<string, string>;
 //# sourceMappingURL=equipmentData.d.ts.map

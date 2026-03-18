@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../prisma/client';
-import { authenticate, requireLeader, AuthRequest } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 
@@ -20,7 +20,7 @@ function getItemLevelForDifficulty(baseItemLevel: number, difficulty: string): n
 // POST /api/drops — batch, no count limit, duplicates allowed
 router.post(
   '/',
-  requireLeader,
+  requireAdmin,
   body('raidKillId').isInt(),
   body('items').isArray({ min: 1 }),
   body('items.*.itemId').notEmpty(),
@@ -103,7 +103,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 // DELETE /api/drops/:id
-router.delete('/:id', requireLeader, async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   const id = parseInt(req.params.id);
   await prisma.drop.delete({ where: { id } });
   return res.status(204).send();

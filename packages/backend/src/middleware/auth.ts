@@ -6,8 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
 export interface AuthRequest extends Request {
   userId?: number;
-  isLeader?: boolean;
-  isSuperAdmin?: boolean;
+  isAdmin?: boolean;
   memberId?: number;
 }
 
@@ -19,54 +18,48 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 
   const token = authHeader.split(' ')[1];
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { userId: number; isSuperAdmin?: boolean };
+    const payload = jwt.verify(token, JWT_SECRET) as { userId: number; isAdmin?: boolean };
     req.userId = payload.userId;
-    req.isSuperAdmin = payload.isSuperAdmin || false;
+    req.isAdmin = payload.isAdmin || false;
     next();
   } catch {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
 }
 
-export async function requireLeader(req: AuthRequest, res: Response, next: NextFunction) {
+export async function requireAdmin(req: AuthRequest, res: Response, next: NextFunction) {
   authenticate(req, res, async () => {
-    // Super admin has leader permissions
-    if (req.isSuperAdmin) {
-      req.isLeader = true;
+    // Check User.isAdmin field
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { isAdmin: true, username: true },
+    });
+    
+    // Also check hard-coded admin username
+    if (user?.isAdmin || user?.username === 'admin') {
+      req.isAdmin = true;
       return next();
     }
     
-    const member = await prisma.member.findFirst({
-      where: { userId: req.userId, isLeader: true },
-    });
-    if (!member) {
-      return res.status(403).json({ error: 'Leader access required' });
-    }
-    req.isLeader = true;
-    req.memberId = member.id;
-    next();
+    return res.status(403).json({ error: 'Admin access required' });
   });
 }
 
 export async function loadMember(req: AuthRequest, _res: Response, next: NextFunction) {
   if (req.userId) {
-    // Super admin has leader permissions
-    if (req.isSuperAdmin) {
-      req.isLeader = true;
-      return next();
-    }
-    
-    const member = await prisma.member.findFirst({
-      where: { userId: req.userId },
+    // Load User.isAdmin
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+      select: { isAdmin: true, username: true },
     });
-    if (member) {
-      req.isLeader = member.isLeader;
-      req.memberId = member.id;
+    
+    if (user) {
+      req.isAdmin = user.isAdmin || user.username === 'admin';
     }
   }
   next();
 }
 
-export function generateToken(userId: number, isSuperAdmin: boolean = false): string {
-  return jwt.sign({ userId, isSuperAdmin }, JWT_SECRET, { expiresIn: '30d' });
+export function generateToken(userId: number, isAdmin: boolean = false): string {
+  return jwt.sign({ userId, isAdmin }, JWT_SECRET, { expiresIn: '30d' });
 }

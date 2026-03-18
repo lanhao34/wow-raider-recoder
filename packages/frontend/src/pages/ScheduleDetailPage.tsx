@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { schedulesApi, raidKillsApi, dropsApi, distributionsApi, membersApi } from '../api';
 import { useAuthStore } from '../store/auth';
-import { RAIDS } from '@guild/shared';
+import { RAIDS, type WoWItem, type ItemSlot } from '@guild/shared';
 import { DIFFICULTY_NAMES, SLOT_NAMES, WOW_CLASS_COLORS } from '@guild/shared';
-import type { Difficulty, Item, WowClass } from '@guild/shared';
+import type { Difficulty, WowClass } from '@guild/shared';
+
+// 使用 WoWItem 替代 Item
+type Item = WoWItem;
 import {
   ArrowLeft, Plus, ChevronDown, ChevronRight, Sword, Package,
   Users, Check, X, Trash2, Star
@@ -47,7 +50,7 @@ interface Schedule {
 export default function ScheduleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isLeader } = useAuthStore();
+  const { isAdmin } = useAuthStore();
   const [schedule, setSchedule] = useState<Schedule | null>(null);
   const [allMembers, setAllMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,11 +68,10 @@ export default function ScheduleDetailPage() {
 
   useEffect(() => {
     const numId = parseInt(id!);
-    Promise.all([schedulesApi.get(numId), membersApi.list()])
+    Promise.all([schedulesApi.get(numId), membersApi.publicList()])
       .then(([sched, mems]) => {
         setSchedule(sched);
-        setAllMembers(mems.filter((m: Member & { status: string }) =>
-          m.status === 'active' || m.status === 'backup'));
+        setAllMembers(mems);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -79,7 +81,7 @@ export default function ScheduleDetailPage() {
     setSchedule(sched);
   };
 
-  const participantIds: number[] = schedule ? JSON.parse(schedule.participantIds || '[]') : [];
+  const participantIds: number[] = schedule?.participantIds ? JSON.parse(schedule.participantIds) : [];
   const participants = allMembers.filter((m) => participantIds.includes(m.id));
   const nonParticipants = allMembers.filter((m) => !participantIds.includes(m.id));
 
@@ -102,7 +104,7 @@ export default function ScheduleDetailPage() {
 
   // Click boss → immediately create kill + open drop modal
   const handleBossClick = async (sr: ScheduleRaid, bossId: string, bossName: string) => {
-    if (!isLeader || !schedule) return;
+    if (!isAdmin || !schedule) return;
     const kill = await raidKillsApi.create({
       scheduleId: schedule.id,
       raidId: sr.raidId,
@@ -122,7 +124,7 @@ export default function ScheduleDetailPage() {
       itemName: item.name,
       slot: item.slot,
       isTier: item.isTier || false,
-      baseItemLevel: item.baseItemLevel,
+      itemLevel: item.itemLevel,
       quality: item.quality,
       armorType: item.armorType,
     }));
@@ -152,7 +154,7 @@ export default function ScheduleDetailPage() {
   if (!schedule) return <div className="text-center text-red-400 py-12">日程不存在</div>;
 
   const killGroups: Record<string, RaidKill[]> = {};
-  for (const kill of schedule.kills) {
+  for (const kill of (schedule?.kills || [])) {
     const key = `${kill.raidId}-${kill.difficulty}`;
     if (!killGroups[key]) killGroups[key] = [];
     killGroups[key].push(kill);
@@ -169,7 +171,7 @@ export default function ScheduleDetailPage() {
           <h1 className="text-xl font-bold">{schedule.date} Raid 日程</h1>
           <div className="text-xs text-[#475569]">周次：{schedule.weekId}</div>
         </div>
-        {isLeader && (
+        {isAdmin && (
           <div className="ml-auto flex gap-2">
             <button
               className={`btn-secondary flex items-center gap-2 text-sm ${showParticipants ? 'border-purple-600 text-purple-300' : ''}`}
@@ -186,7 +188,7 @@ export default function ScheduleDetailPage() {
       </div>
 
       {/* Participant Panel */}
-      {showParticipants && isLeader && (
+      {showParticipants && isAdmin && (
         <div className="card border-purple-800/40">
           <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
             <Users size={15} className="text-purple-400" />
@@ -222,7 +224,7 @@ export default function ScheduleDetailPage() {
       )}
 
       {/* Add raid form */}
-      {showAddRaid && isLeader && (
+      {showAddRaid && isAdmin && (
         <div className="card border-purple-800/50">
           <h3 className="text-sm font-semibold mb-3">选择团本与难度</h3>
           <div className="flex gap-3 flex-wrap">
@@ -241,14 +243,14 @@ export default function ScheduleDetailPage() {
         </div>
       )}
 
-      {schedule.raids.length === 0 ? (
+      {(schedule?.raids?.length || 0) === 0 ? (
         <div className="card text-center py-12 text-[#475569]">
           <Package className="mx-auto mb-3 opacity-30" size={40} />
           <p>本日程尚未选择团本</p>
-          {isLeader && <p className="text-sm mt-1">点击上方「添加团本」开始</p>}
+          {isAdmin && <p className="text-sm mt-1">点击上方「添加团本」开始</p>}
         </div>
       ) : (
-        schedule.raids.map((sr) => {
+        (schedule?.raids || []).map((sr) => {
           const raid = RAIDS.find((r) => r.id === sr.raidId);
           const killKey = `${sr.raidId}-${sr.difficulty}`;
           const kills = killGroups[killKey] || [];
@@ -290,7 +292,7 @@ export default function ScheduleDetailPage() {
                             {undistributed > 0 && (
                               <span className="text-xs text-yellow-500">{undistributed} 待分配</span>
                             )}
-                            {isLeader && (
+                            {isAdmin && (
                               <button
                                 className="text-xs btn-secondary py-1 px-2"
                                 onClick={() => { setPendingDrops([]); setDropModal(kill); }}
@@ -305,7 +307,7 @@ export default function ScheduleDetailPage() {
                               {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                             </button>
                           </>
-                        ) : isLeader ? (
+                        ) : isAdmin ? (
                           <button
                             className="text-xs btn-primary py-1 px-3"
                             onClick={() => handleBossClick(sr, boss.id, boss.name)}
@@ -342,7 +344,7 @@ export default function ScheduleDetailPage() {
                                       {drop.distribution.member.displayName}
                                     </div>
                                   </div>
-                                ) : isLeader ? (
+                                ) : isAdmin ? (
                                   <button
                                     className="text-xs btn-secondary py-0.5 px-2 shrink-0"
                                     onClick={() => { setDistributeModal(drop); setSelectedMemberId(null); }}
@@ -352,7 +354,7 @@ export default function ScheduleDetailPage() {
                                 ) : (
                                   <span className="text-xs text-yellow-500 shrink-0">待分配</span>
                                 )}
-                                {isLeader && !drop.distribution && (
+                                {isAdmin && !drop.distribution && (
                                   <button
                                     className="opacity-0 group-hover:opacity-100 text-[#475569] hover:text-red-400 transition-all p-0.5"
                                     onClick={() => handleDeleteDrop(drop.id)}
@@ -516,7 +518,7 @@ function DropEntryModal({
                   )}
                 </div>
                 <div className="text-xs text-[#475569] ml-5 mt-0.5">
-                  {SLOT_NAMES[item.slot] || item.slot} · ilvl {item.baseItemLevel}
+                  {SLOT_NAMES[item.slot as keyof typeof SLOT_NAMES] || item.slot} · ilvl {item.itemLevel}
                 </div>
               </button>
             ))}
