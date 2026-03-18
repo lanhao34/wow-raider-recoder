@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { membersApi } from '../api';
 import { useAuthStore } from '../store/auth';
-import { Users, Plus, Trash2, X, Check, Shield, Calendar, Package, ListChecks, Crown } from 'lucide-react';
+import { Users, Plus, Trash2, X, Check, Shield, Calendar, Package, ListChecks, Crown, Upload } from 'lucide-react';
 import { WOW_CLASS_ZH_MAP, type WowClass, WOW_CLASS_COLORS } from '@guild/shared';
+import * as XLSX from 'xlsx';
 
 interface MemberWithStats {
   id: number;
@@ -46,10 +47,72 @@ export default function MembersPage() {
   const [showAdd, setShowAdd] = useState(false);
   const [showStats, setShowStats] = useState<number | null>(null);
   const [form, setForm] = useState({ displayName: '', wowClass: 'warrior' as WowClass, status: 'active' });
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadMembers();
   }, []);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows: any[] = XLSX.utils.sheet_to_json(firstSheet);
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      for (const row of rows) {
+        const displayName = row['角色名']?.toString().trim();
+        const wowClassZh = row['职业']?.toString().trim();
+        const statusZh = row['状态']?.toString().trim() || '在队';
+
+        if (!displayName || !wowClassZh) {
+          errorCount++;
+          continue;
+        }
+
+        let targetClass: WowClass = 'warrior';
+        for (const [en, zh] of Object.entries(WOW_CLASS_ZH_MAP)) {
+          if (zh.includes(wowClassZh) || wowClassZh.includes(zh)) {
+            targetClass = en as WowClass;
+            break;
+          }
+        }
+
+        const status = statusZh === '替补' ? 'backup' : statusZh === '非活跃' ? 'inactive' : 'active';
+
+        try {
+          await membersApi.create({
+            displayName,
+            wowClass: targetClass,
+            wowClassZh: WOW_CLASS_ZH_MAP[targetClass],
+            status,
+            bindToSelf: false, // 批量导入的角色默认是可认领的
+          });
+          successCount++;
+        } catch (err) {
+          console.error('Failed to import row', row, err);
+          errorCount++;
+        }
+      }
+
+      alert(`导入完成！\n成功：${successCount} 条\n失败：${errorCount} 条\n\n提示：Excel需要有列名【角色名】【职业】`);
+      loadMembers();
+    } catch (error) {
+      console.error(error);
+      alert('读取 Excel 文件失败，请检查格式');
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const loadMembers = async () => {
     try {
@@ -81,29 +144,30 @@ export default function MembersPage() {
     loadMembers();
   };
 
-  const handleSetAdmin = async (memberId: number, userId: number | undefined, isAdmin: boolean) => {
-    if (!userId) {
-      alert('该角色未关联用户');
-      return;
-    }
-    if (!confirm(`${isAdmin ? '指定' : '取消'} ${members.find(m => m.id === memberId)?.displayName} 为管理员？`)) return;
-    
-    try {
-      await membersApi.setAdmin(memberId, isAdmin);
-      loadMembers();
-    } catch (error: any) {
-      alert(error.response?.data?.error || '操作失败');
-    }
-  };
-
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
         <Users className="text-purple-400" size={24} />
         <h1 className="text-xl font-bold">成员管理</h1>
-        <button className="btn-primary ml-auto flex items-center gap-2" onClick={() => setShowAdd(true)}>
-          <Plus size={16} /> 添加角色
-        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <input 
+            type="file" 
+            accept=".xlsx, .xls" 
+            className="hidden" 
+            ref={fileInputRef} 
+            onChange={handleFileUpload} 
+          />
+          <button 
+            className="btn-ghost flex items-center gap-2" 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importing}
+          >
+            <Upload size={16} /> {importing ? '导入中...' : '导入 Excel'}
+          </button>
+          <button className="btn-primary flex items-center gap-2" onClick={() => setShowAdd(true)}>
+            <Plus size={16} /> 添加角色
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -168,18 +232,6 @@ export default function MembersPage() {
 
                 {/* 操作按钮 */}
                 <div className="flex items-center gap-2 shrink-0">
-                  {isAdmin && (
-                    <button
-                      onClick={() => handleSetAdmin(m.id, m.userId, !m.isAdmin)}
-                      className={`btn-ghost flex items-center gap-1 text-xs ${
-                        m.isAdmin ? 'text-red-400 hover:bg-red-900/20' : 'text-green-400 hover:bg-green-900/20'
-                      }`}
-                      title={m.isAdmin ? '取消管理员' : '指定管理员'}
-                    >
-                      <Shield size={14} />
-                      {m.isAdmin ? '取消' : '指定'}
-                    </button>
-                  )}
                   <button
                     onClick={() => handleDelete(m.id)}
                     className="text-[#475569] hover:text-red-400 transition-colors p-1"

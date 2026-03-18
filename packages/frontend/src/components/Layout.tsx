@@ -17,10 +17,8 @@ export default function Layout() {
 
   const navItems = [
     { to: '/calendar', label: '活动日历', icon: CalendarDays },
-    // 没有角色的用户显示"认领角色"，有角色的显示"我的需求"
-    ...(!member ? [
-      { to: '/claim', label: '我的角色', icon: Users, highlight: true },
-    ] : [
+    { to: '/my-characters', label: '我的角色', icon: Users, highlight: true },
+    ...(!member ? [] : [
       { to: '/requirements', label: '装备需求', icon: ListChecks },
       { to: '/tier', label: '套装追踪', icon: Shield },
     ]),

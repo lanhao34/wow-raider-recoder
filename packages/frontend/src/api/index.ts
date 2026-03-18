@@ -35,16 +35,22 @@ export const authApi = {
   me: () => api.get('/auth/me').then((r) => r.data),
 };
 
-// Members
 export const membersApi = {
   list: () => api.get('/members').then((r) => r.data),
+  my: () => api.get('/members/my').then((r) => r.data),
   publicList: () => api.get('/members/public').then((r) => r.data),
   stats: () => api.get('/members/stats').then((r) => r.data),
   create: (data: object) => api.post('/members', data).then((r) => r.data),
   update: (id: number, data: object) => api.put(`/members/${id}`, data).then((r) => r.data),
   delete: (id: number) => api.delete(`/members/${id}`),
-  setAdmin: (id: number, isAdmin: boolean) => api.put(`/members/${id}/set-admin`, { isAdmin }).then((r) => r.data),
   tierProgress: () => api.get('/requirements/tier-progress').then((r) => r.data),
+};
+
+// Claims
+export const claimsApi = {
+  available: () => api.get('/claims/available').then((r) => r.data),
+  request: (memberId: number) => api.post('/claims/request', { memberId }).then((r) => r.data),
+  returnRole: (memberId: number) => api.post('/claims/return', { memberId }).then((r) => r.data),
 };
 
 // Schedules

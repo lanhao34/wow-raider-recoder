@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAuthStore } from './store/auth';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
-import ClaimRolePage from './pages/ClaimRolePage';
+import MyCharactersPage from './pages/MyCharactersPage';
 import RequirementsPage from './pages/RequirementsPage';
 import TierProgressPage from './pages/TierProgressPage';
 import MembersPage from './pages/MembersPage';
@@ -41,7 +41,7 @@ export default function App() {
           <Route index element={<Navigate to="/calendar" replace />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="schedules/:id" element={<ScheduleDetailPage />} />
-          <Route path="claim" element={<ClaimRolePage />} />
+          <Route path="my-characters" element={<MyCharactersPage />} />
           <Route path="requirements" element={<RequirementsPage />} />
           <Route path="tier" element={<TierProgressPage />} />
           <Route path="members" element={<MembersPage />} />
