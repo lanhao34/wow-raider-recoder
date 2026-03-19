@@ -3,7 +3,9 @@ FROM node:20-alpine AS builder
 WORKDIR /workspace
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm install -g pnpm && \
+    pnpm config set registry https://registry.npmmirror.com
 
 # Copy shared package
 COPY packages/shared/package.json ./packages/shared/

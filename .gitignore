@@ -10,3 +10,5 @@ yarn-error.log*
 coverage/
 .idea/
 .vscode/
+
+.pnpm-store/

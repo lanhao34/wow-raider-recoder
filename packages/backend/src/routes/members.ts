@@ -20,7 +20,7 @@ router.get('/', authenticate, requireAdmin, async (req: AuthRequest, res) => {
     },
   });
   
-  res.json(members.map(m => ({
+  res.json(members.map((m: any) => ({
     id: m.id,
     displayName: m.displayName,
     wowClass: m.wowClass,
@@ -118,15 +118,15 @@ router.get('/stats', authenticate, requireAdmin, async (req: AuthRequest, res) =
     },
   });
 
-  const stats = members.map(member => {
+  const stats = members.map((member: any) => {
     // 统计活动参与次数
-    const participationCount = allSchedules.filter(s => {
+    const participationCount = allSchedules.filter((s: any) => {
       const participantIds = JSON.parse(s.participantIds) as number[];
       return participantIds.includes(member.id);
     }).length;
 
     // 统计装备获取
-    const itemsReceived = member.distributions.map(d => ({
+    const itemsReceived = member.distributions.map((d: any) => ({
       itemId: d.drop.itemId,
       itemName: d.drop.itemName,
       itemLevel: d.drop.itemLevel,
@@ -204,12 +204,12 @@ router.get('/:id/stats', authenticate, async (req: AuthRequest, res) => {
     },
   });
 
-  const participationCount = allSchedules.filter(s => {
+  const participationCount = allSchedules.filter((s: any) => {
     const participantIds = JSON.parse(s.participantIds) as number[];
     return participantIds.includes(member.id);
   }).length;
 
-  const itemsReceived = member.distributions.map(d => ({
+  const itemsReceived = member.distributions.map((d: any) => ({
     itemId: d.drop.itemId,
     itemName: d.drop.itemName,
     itemLevel: d.drop.itemLevel,

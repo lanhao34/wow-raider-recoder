@@ -107,7 +107,7 @@ router.post(
       token,
       user: { id: user.id, username: user.username, displayName: user.displayName },
       member: members.length > 0 ? members[0] : null,
-      members: members.map(m => ({
+      members: members.map((m: any) => ({
         id: m.id,
         displayName: m.displayName,
         wowClass: m.wowClass,
@@ -135,7 +135,7 @@ router.get('/me', async (req, res) => {
     const members = await prisma.member.findMany({ where: { userId: user.id, isDisabled: false } });
     return res.json({
       user: { id: user.id, username: user.username, displayName: user.displayName },
-      members: members.map(m => ({
+      members: members.map((m: any) => ({
         id: m.id,
         displayName: m.displayName,
         wowClass: m.wowClass,

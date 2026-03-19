@@ -223,8 +223,8 @@ router.post('/:id/participants', authenticate, async (req: AuthRequest, res) => 
     return res.status(404).json({ error: '活动不存在' });
   }
   
-  const confirmedCount = schedule.participants.filter(p => p.status === 'confirmed').length;
-  const substituteCount = schedule.participants.filter(p => p.status === 'substitute').length;
+  const confirmedCount = schedule.participants.filter((p: any) => p.status === 'confirmed').length;
+  const substituteCount = schedule.participants.filter((p: any) => p.status === 'substitute').length;
   
   let finalStatus = status;
   let slot: number | null = null;

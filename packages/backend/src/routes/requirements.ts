@@ -91,11 +91,11 @@ router.get('/tier-progress', authenticate, async (_req, res) => {
     include: { drop: true },
   });
 
-  const progress = members.map(member => {
-    const memberDist = allDistributions.filter(d => d.memberId === member.id);
+  const progress = members.map((member: any) => {
+    const memberDist = allDistributions.filter((d: any) => d.memberId === member.id);
     const slots: Record<string, boolean> = {};
     for (const slot of tierSlots) {
-      slots[slot] = memberDist.some(d => d.drop.slot === slot);
+      slots[slot] = memberDist.some((d: any) => d.drop.slot === slot);
     }
     return {
       memberId: member.id,
