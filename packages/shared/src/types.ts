@@ -18,7 +18,10 @@ export type ItemSlot =
   | 'head' | 'neck' | 'shoulder' | 'back' | 'chest'
   | 'wrist' | 'hands' | 'waist' | 'legs' | 'feet'
   | 'finger' | 'trinket' | 'onehand' | 'mainhand'
-  | 'offhand' | 'twohand' | 'ranged';
+  | 'offhand' | 'twohand' | 'ranged'
+  | 'one_hand' | 'main_hand' | 'off_hand' | 'two_hand'
+  | 'relic' | 'shield' | 'held_in_off_hand' | 'cloak'
+  | 'tabard' | 'shirt' | 'bow' | 'gun' | 'thrown' | 'tome' | 'unknown' | string;
 
 export type ItemType = 'weapon' | 'armor' | 'jewelry' | 'trinket';
 export type ArmorType = 'plate' | 'mail' | 'leather' | 'cloth';
@@ -244,10 +247,25 @@ export const SLOT_NAMES: Record<ItemSlot, string> = {
   finger: '戒指',
   trinket: '饰品',
   onehand: '单手武器',
+  one_hand: '单手武器',
   mainhand: '主手武器',
+  main_hand: '主手武器',
   offhand: '副手',
+  off_hand: '副手',
   twohand: '双手武器',
+  two_hand: '双手武器',
   ranged: '远程',
+  relic: '圣物',
+  shield: '盾牌',
+  held_in_off_hand: '副手物品',
+  cloak: '披风',
+  tabard: '战袍',
+  shirt: '衬衣',
+  bow: '弓',
+  gun: '枪械',
+  thrown: '投掷武器',
+  tome: '魔典',
+  unknown: '未知部位',
 };
 
 export const DIFFICULTY_NAMES: Record<Difficulty, string> = {

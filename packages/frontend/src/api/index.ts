@@ -33,13 +33,14 @@ export const authApi = {
   register: (data: { username: string; password: string; displayName?: string }) =>
     api.post('/auth/register', data).then((r) => r.data),
   me: () => api.get('/auth/me').then((r) => r.data),
+  getUsers: () => api.get('/auth/users').then((r) => r.data),
 };
 
 export const membersApi = {
   list: () => api.get('/members').then((r) => r.data),
   my: () => api.get('/members/my').then((r) => r.data),
   publicList: () => api.get('/members/public').then((r) => r.data),
-  stats: () => api.get('/members/stats').then((r) => r.data),
+  stats: () => api.get(`/members/stats?t=${Date.now()}`).then((r) => r.data),
   create: (data: object) => api.post('/members', data).then((r) => r.data),
   update: (id: number, data: object) => api.put(`/members/${id}`, data).then((r) => r.data),
   delete: (id: number) => api.delete(`/members/${id}`),
@@ -66,6 +67,7 @@ export const schedulesApi = {
     api.post(`/schedules/${scheduleId}/raids`, data).then((r) => r.data),
   removeRaid: (scheduleId: number, raidRecordId: number) =>
     api.delete(`/schedules/${scheduleId}/raids/${raidRecordId}`),
+  delete: (id: number) => api.delete(`/schedules/${id}`).then((r) => r.data),
 };
 
 // Raid kills
@@ -78,6 +80,7 @@ export const raidKillsApi = {
     difficulty: string;
   }) => api.post('/raid-kills', data).then((r) => r.data),
   get: (id: number) => api.get(`/raid-kills/${id}`).then((r) => r.data),
+  delete: (id: number) => api.delete(`/raid-kills/${id}`).then((r) => r.data),
 };
 
 // Drops
@@ -109,4 +112,9 @@ export const requirementsApi = {
   create: (data: { memberId?: number; itemId: string; itemName: string; priority: string; note?: string }) =>
     api.post('/requirements', data).then((r) => r.data),
   delete: (id: number) => api.delete(`/requirements/${id}`),
+};
+
+// Game Data
+export const gameDataApi = {
+  getRaids: () => api.get('/game-data/raids').then((r) => r.data),
 };

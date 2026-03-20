@@ -82,6 +82,22 @@ export default function MyCharactersPage() {
     }
   };
 
+  const handleDelete = async (memberId: number) => {
+    if (!confirm('危险：确认要永久删除此角色吗？\n\n仅当此角色未参加过任何团队活动且未拾取过装备时才能删除，否则将失败并建议使用\"退回\"功能。')) return;
+    setReturning(memberId); // borrow loading status
+    setMessage(null);
+    try {
+      await membersApi.delete(memberId);
+      setMessage({ type: 'success', text: '无数据的冗余角色已成功永久删除！' });
+      await useAuthStore.getState().loadFromStorage();
+      await fetchData();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error?.response?.data?.error || '删除失败' });
+    } finally {
+      setReturning(null);
+    }
+  };
+
   const handleCreate = async () => {
     if (!createForm.displayName.trim()) {
       setMessage({ type: 'error', text: '请输入角色名' });
@@ -167,18 +183,31 @@ export default function MyCharactersPage() {
                         </div>
                       </div>
                     </div>
-                    {/* 退回按钮 */}
-                    {member.source === 'claimed' && (
-                      <button
-                        className="btn-ghost text-yellow-500 hover:text-yellow-400 hover:bg-yellow-900/20 flex items-center gap-1 px-3 py-1.5 text-sm"
-                        onClick={() => handleReturn(member.id)}
-                        disabled={returning === member.id}
-                        title="认领错了？点击退回"
-                      >
-                        {returning === member.id ? <Check size={14} className="animate-spin" /> : <Undo2 size={14} />}
-                        退回
-                      </button>
-                    )}
+                    {/* 操作按钮 */}
+                    <div className="flex items-center gap-2">
+                      {member.source === 'claimed' && (
+                        <button
+                          className="btn-ghost text-yellow-500 hover:text-yellow-400 hover:bg-yellow-900/20 flex items-center gap-1 px-3 py-1.5 text-sm"
+                          onClick={() => handleReturn(member.id)}
+                          disabled={returning === member.id}
+                          title="认领错了？点击退回"
+                        >
+                          {returning === member.id ? <Check size={14} className="animate-spin" /> : <Undo2 size={14} />}
+                          退回
+                        </button>
+                      )}
+                      {member.source === 'created' && (
+                        <button
+                          className="btn-ghost text-red-500 hover:text-red-400 hover:bg-red-900/20 flex items-center gap-1 px-3 py-1.5 text-sm"
+                          onClick={() => handleDelete(member.id)}
+                          disabled={returning === member.id}
+                          title="无记录角色可永久删除"
+                        >
+                          {returning === member.id ? <Check size={14} className="animate-spin" /> : <X size={14} />}
+                          删除
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

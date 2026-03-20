@@ -52,10 +52,10 @@ model RaidSchedule {
   raids          ScheduleRaid[]
 
   // 活动报名相关字段
-  raidId         String  @map("raid_id") // 副本 ID
-  raidName       String  @map("raid_name") // 副本名称
+  raidId         String? @map("raid_id") // 副本 ID
+  raidName       String? @map("raid_name") // 副本名称
   raidNameZh     String? @map("raid_name_zh") // 副本中文名
-  difficulty     String // normal/heroic/mythic
+  difficulty     String? // normal/heroic/mythic
   teamName       String? @map("team_name") // 团名（一团/二团）
   maxPlayers     Int     @default(20) @map("max_players") // 正选人数上限
   maxSubstitutes Int     @default(10) @map("max_substitutes") // 替补上限
@@ -124,6 +124,7 @@ model Drop {
   bonusDrop     Boolean       @default(false) @map("bonus_drop")
   createdAt     DateTime      @default(now()) @map("created_at")
   armorType     String?       @map("armor_type")
+  weaponType    String?       @map("weapon_type")
   baseItemLevel Int?          @map("base_item_level")
   itemLevel     Int           @map("item_level")
   quality       String        @default("epic")
@@ -159,3 +160,5 @@ model Requirement {
   @@unique([memberId, itemId])
   @@map("requirements")
 }
+
+

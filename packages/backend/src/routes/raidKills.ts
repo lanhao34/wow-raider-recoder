@@ -78,4 +78,15 @@ router.get('/:id', async (req, res) => {
   return res.json(kill);
 });
 
+// DELETE /api/raid-kills/:id
+router.delete('/:id', requireAdmin, async (req: AuthRequest, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    await prisma.raidKill.delete({ where: { id } });
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 export default router;

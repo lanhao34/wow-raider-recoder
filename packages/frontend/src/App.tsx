@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from './store/auth';
+import { useGameDataStore } from './store/gameData';
 import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import MyCharactersPage from './pages/MyCharactersPage';
@@ -24,10 +25,12 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const loadFromStorage = useAuthStore((s) => s.loadFromStorage);
+  const loadRaids = useGameDataStore((s) => s.loadRaids);
 
   useEffect(() => {
     loadFromStorage();
-  }, [loadFromStorage]);
+    loadRaids();
+  }, [loadFromStorage, loadRaids]);
 
   return (
     <BrowserRouter>

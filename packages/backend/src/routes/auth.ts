@@ -2,7 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { body, validationResult } from 'express-validator';
 import prisma from '../prisma/client';
-import { generateToken } from '../middleware/auth';
+import { generateToken, authenticate, requireAdmin } from '../middleware/auth';
 
 const router = Router();
 
@@ -148,6 +148,21 @@ router.get('/me', async (req, res) => {
   } catch {
     return res.status(401).json({ error: '登录已过期' });
   }
+});
+
+// GET /api/auth/users
+router.get('/users', authenticate, requireAdmin, async (req, res) => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+      username: true,
+      displayName: true,
+    },
+    orderBy: {
+      displayName: 'asc'
+    }
+  });
+  return res.json(users);
 });
 
 export default router;

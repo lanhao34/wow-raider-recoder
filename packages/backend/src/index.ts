@@ -9,6 +9,7 @@ import raidKillRoutes from './routes/raidKills';
 import dropRoutes from './routes/drops';
 import distributionRoutes from './routes/distributions';
 import requirementRoutes from './routes/requirements';
+import gameDataRoutes from './routes/gameData';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -33,6 +34,7 @@ app.use('/api/raid-kills', raidKillRoutes);
 app.use('/api/drops', dropRoutes);
 app.use('/api/distributions', distributionRoutes);
 app.use('/api/requirements', requirementRoutes);
+app.use('/api/game-data', gameDataRoutes);
 
 // Error handler
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

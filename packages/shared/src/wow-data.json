@@ -1,200 +1,1556 @@
 {
   "raids": [
     {
-      "id": "sunwell",
-      "name": "Sunwell Plateau",
-      "nameZh": "太阳井高地",
-      "expansion": "tbc",
+      "id": "raid_1273",
+      "nameZh": "尼鲁巴尔王宫",
+      "expansion": "12.0",
       "bosses": [
         {
-          "id": "24850",
-          "name": "Kalecgos",
-          "nameZh": "卡雷苟斯",
+          "id": "boss_2612",
+          "nameZh": "虫巢扭曲者欧维纳克斯",
           "loot": [
             {
-              "id": "34232",
-              "name": "Felfury Leggings",
-              "nameZh": "魔怒腿甲",
-              "slot": "legs",
+              "id": "212452",
+              "nameZh": "阴森注射器",
+              "slot": "relic",
               "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "plate"
+              "itemLevel": 571,
+              "icon": "inv_raid_gruesomesyringe_red",
+              "secondaryStats": ""
             },
             {
-              "id": "34233",
-              "name": "Leggings of the Immortal",
-              "nameZh": "永恒长夜护腿",
-              "slot": "legs",
+              "id": "220305",
+              "nameZh": "欧维纳克斯的嬗变之卵",
+              "slot": "relic",
               "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "cloth"
+              "itemLevel": 571,
+              "icon": "inv_raid_mercurialegg_purple",
+              "secondaryStats": ""
             },
             {
-              "id": "34326",
-              "name": "Stanchion of Primal Instinct",
-              "nameZh": "原始本能护手",
+              "id": "225576",
+              "nameZh": "扭动的环虫",
+              "slot": "finger",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_qiraj_skinsandworm",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212387",
+              "nameZh": "虫巢扭曲者的森怖触媒",
+              "slot": "tome",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_offhand_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212418",
+              "nameZh": "黑血注射器",
               "slot": "hands",
               "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "leather"
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_glove_raiddeathknightnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212389",
+              "nameZh": "恐惧输送塔杖",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "staff",
+              "icon": "inv_staff_2h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225580",
+              "nameZh": "加速扬升之环",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_belt_mail_raidevokernerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225588",
+              "nameZh": "殷红实验品的绷带",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_bracer_leather_raidmonknerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225582",
+              "nameZh": "同化蛋壳便鞋",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_boot_cloth_raidmagenerubian_d_01",
+              "secondaryStats": ""
             }
           ]
         },
         {
-          "id": "24882",
-          "name": "Brutallus",
-          "nameZh": "布鲁塔卢斯",
+          "id": "boss_2611",
+          "nameZh": "血缚恐魔",
           "loot": [
             {
-              "id": "34325",
-              "name": "Felsteel Longblade",
-              "nameZh": "魔钢长剑",
-              "slot": "main_hand",
+              "id": "219917",
+              "nameZh": "蠕行凝块",
+              "slot": "relic",
               "quality": "epic",
-              "itemLevel": 154
+              "itemLevel": 571,
+              "icon": "inv_raid_creepingcoagulum_purple",
+              "secondaryStats": ""
             },
             {
-              "id": "34343",
-              "name": "Chestguard of the Forgotten Conqueror",
-              "nameZh": "被遗忘征服者的胸甲",
-              "slot": "chest",
+              "id": "212451",
+              "nameZh": "畸变法炉",
+              "slot": "relic",
               "quality": "epic",
-              "itemLevel": 154,
-              "isTier": true,
-              "tierSet": "tier6"
-            }
-          ]
-        },
-        {
-          "id": "24947",
-          "name": "Felmyst",
-          "nameZh": "菲米丝",
-          "loot": [
-            {
-              "id": "34344",
-              "name": "Thalassian Ranger Gauntlets",
-              "nameZh": "奎尔萨拉斯游侠护手",
-              "slot": "hands",
-              "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "mail"
+              "itemLevel": 571,
+              "icon": "inv_raid_aberrantspellforge_pink",
+              "secondaryStats": ""
             },
             {
-              "id": "34345",
-              "name": "Eredan Scepter of Dominance",
-              "nameZh": "埃雷达爾权杖",
-              "slot": "main_hand",
-              "quality": "epic",
-              "itemLevel": 154
-            }
-          ]
-        },
-        {
-          "id": "25165",
-          "name": "Eredar Twins",
-          "nameZh": "艾瑞达双子",
-          "loot": [
-            {
-              "id": "34567",
-              "name": "Robes of Faltered Light",
-              "nameZh": "光晕长袍",
-              "slot": "chest",
-              "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "cloth"
-            },
-            {
-              "id": "34568",
-              "name": "Blade of the Sinful",
-              "nameZh": "罪恶之刃",
-              "slot": "main_hand",
-              "quality": "epic",
-              "itemLevel": 154
-            },
-            {
-              "id": "34537",
-              "name": "Helm of the Forgotten Conqueror",
-              "nameZh": "被遗忘征服者的头盔",
+              "id": "212417",
+              "nameZh": "悠远之地的黑暗面容",
               "slot": "head",
               "quality": "epic",
-              "itemLevel": 154,
-              "isTier": true,
-              "tierSet": "tier6"
-            }
-          ]
-        },
-        {
-          "id": "25741",
-          "name": "M'uru",
-          "nameZh": "穆鲁",
-          "loot": [
-            {
-              "id": "34808",
-              "name": "Vanir Fist of Brutality",
-              "nameZh": "瓦尼尔残忍拳套",
-              "slot": "hands",
-              "quality": "epic",
-              "itemLevel": 154,
-              "armorType": "plate"
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_leather_raiddemonhunternerubian_d_01_helm",
+              "secondaryStats": ""
             },
             {
-              "id": "34809",
-              "name": "Shadowblade of Banishment",
-              "nameZh": "放逐之影",
-              "slot": "main_hand",
+              "id": "212447",
+              "nameZh": "无明界钥匙",
+              "slot": "finger",
               "quality": "epic",
-              "itemLevel": 154
+              "itemLevel": 571,
+              "icon": "inv_nerubian_ring_02_color5",
+              "secondaryStats": ""
             },
             {
-              "id": "34848",
-              "name": "Chestguard of the Forgotten Protector",
-              "nameZh": "被遗忘保护者的胸甲",
+              "id": "212422",
+              "nameZh": "血缚恐魔的腿铠",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_plate_raidpaladinnerubian_d_01_pant",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212430",
+              "nameZh": "破碎之眼腰布",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_belt_cloth_raidmagenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212438",
+              "nameZh": "受污染的幽魂裹腕",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_bracer_leather_raidroguenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212395",
+              "nameZh": "血吻反曲刀",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "dagger",
+              "icon": "inv_knife_1h_nerubianraid_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225590",
+              "nameZh": "暗色壁垒之靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_boot_raiddeathknightnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212439",
+              "nameZh": "虚假黎明信标",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidpriestnerubian_d_01_shoulder",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212414",
+              "nameZh": "失落看护者的残留物",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_mail_raidhunternerubian_d_01_belt",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212404",
+              "nameZh": "具现毒瘴节杖",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "mace_1h",
+              "icon": "inv_mace_1h_nerubianraid_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212421",
+              "nameZh": "血肉飞溅外膜",
               "slot": "chest",
               "quality": "epic",
-              "itemLevel": 154,
-              "isTier": true,
-              "tierSet": "tier6"
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_chest_mail_raidevokernerubian_d_01",
+              "secondaryStats": ""
             }
           ]
         },
         {
-          "id": "25315",
-          "name": "Kil'jaeden",
-          "nameZh": "基尔加丹",
+          "id": "boss_2609",
+          "nameZh": "拉夏南",
           "loot": [
             {
-              "id": "34832",
-              "name": "Thori'dal, the Stars' Fury",
-              "nameZh": "索利达尔·群星之怒",
+              "id": "212453",
+              "nameZh": "天空恐魔的腐蚀腺体",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_raid_oversizedacidgland_green",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212437",
+              "nameZh": "燃灯者的残破镣铐",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_bracer_raiddeathknightnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212391",
+              "nameZh": "掠食者的盛宴之弧",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "warglaive",
+              "icon": "inv_glaive_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212398",
+              "nameZh": "炙热之风短棒",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "mace_1h",
+              "icon": "inv_mace_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225583",
+              "nameZh": "巨兽的侵蚀腰带",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_leather_raiddemonhunternerubian_d_01_belt",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212440",
+              "nameZh": "虔信者的废弃头饰",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidwarlocknerubian_d_01_helm",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212448",
+              "nameZh": "破碎回忆盒坠",
+              "slot": "neck",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_nerubian_necklace_02_color3",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225586",
+              "nameZh": "拉夏南的怪诞脚爪",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_boot_mail_raidevokernerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225574",
+              "nameZh": "碎悲之翼",
+              "slot": "cloak",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_leather_raiddemonhunternerubian_d_01_cape",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2608",
+          "nameZh": "流丝之庭",
+          "loot": [
+            {
+              "id": "220202",
+              "nameZh": "间谍大师裹网",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_11_0_raid_spymastersweb_purple",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212450",
+              "nameZh": "统群者的权威",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_raid_swarmlordsauthority_purple",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212397",
+              "nameZh": "塔卡兹基的熵能谕令",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "staff",
+              "icon": "inv_staff_2h_nerubianraid_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225584",
+              "nameZh": "纺束者的狡诈腕扣",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_bracer_cloth_raidmagenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212407",
+              "nameZh": "阿努巴拉什的硕大颌骨",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "axe_2h",
+              "icon": "inv_axe_2h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212443",
+              "nameZh": "碎壳护胫",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_plate_raidpaladinnerubian_d_01_boot",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212429",
+              "nameZh": "虚空之光低语肩甲",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_shoulder_mail_raidevokernerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212432",
+              "nameZh": "千疤穿刺者",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_glove_leather_raiddruidnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225575",
+              "nameZh": "流丝顾问的恩眷",
+              "slot": "neck",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_11_0_nerubian_necklace_02_color5",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2607",
+          "nameZh": "噬灭者乌格拉克斯",
+          "loot": [
+            {
+              "id": "219915",
+              "nameZh": "邪污巨兽的螫肢",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_raid_foulbehemothschelicera_red",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212424",
+              "nameZh": "老练土灵的巨石之铠",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_shoulder_plate_raidwarriornerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212426",
+              "nameZh": "爽脆入侵者的腕带",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidwarlocknerubian_d_01_bracer",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212425",
+              "nameZh": "吞噬者的紧致内脏",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_belt_leather_raidroguenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212446",
+              "nameZh": "尼努巴尔皇家纹章",
+              "slot": "cloak",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cape_special_nerubian_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212388",
+              "nameZh": "乌格拉克斯的小食捣碎器",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "mace_2h",
+              "icon": "inv_mace_2h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212386",
+              "nameZh": "噬灭黑暗之躯",
+              "slot": "shield",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "shield",
+              "icon": "inv_shield_1h_nerubianraid_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212442",
+              "nameZh": "饥渴者的重装腰带",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_buckle_raiddeathknightnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212409",
+              "nameZh": "铭毒之爪",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "fist_weapon",
+              "icon": "inv_hand_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212423",
+              "nameZh": "叛军的失血髓裤",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_pant_leather_raidmonknerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212428",
+              "nameZh": "最终餐食之角",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_mail_raidhunternerubian_d_01_helm",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212431",
+              "nameZh": "地渊蛾内衬足垫",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_mail_raidhunternerubian_d_01_boot",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2602",
+          "nameZh": "安苏雷克女王",
+          "loot": [
+            {
+              "id": "212454",
+              "nameZh": "狂乱女王圣谕",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_raid_abyssaleffigy_purple",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225579",
+              "nameZh": "严苛专治者的纹章",
+              "slot": "shield",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "shield",
+              "icon": "inv_shield_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212394",
+              "nameZh": "统御者的轻蔑",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "dagger",
+              "icon": "inv_knife_1h_nerubianraid_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212436",
+              "nameZh": "妄念攫握",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_glove_mail_raidshamannerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212420",
+              "nameZh": "女王护卫的甲壳",
+              "slot": "chest",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_chest_plate_raidwarriornerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225578",
+              "nameZh": "剧毒契约印戒",
+              "slot": "finger",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_nerubian_ring_01_color3",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212433",
+              "nameZh": "杂食者的剧毒伪装",
+              "slot": "chest",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_chest_leather_raiddruidnerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212434",
+              "nameZh": "虚空之语纱笼",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_pant_cloth_raidmagenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212401",
+              "nameZh": "安苏雷克的最终审判",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "axe_1h",
+              "icon": "inv_axe_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225585",
+              "nameZh": "刺鼻的扬升者腰布",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidpriestnerubian_d_01_belt",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212444",
+              "nameZh": "被镇压的叛乱者的残躯",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_shoulder_leather_raidmonknerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212435",
+              "nameZh": "液化叛逃者的绑腿",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_robe_mail_raidshamannerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225587",
+              "nameZh": "虔诚贡品的镣铐",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_plate_raidpaladinnerubian_d_01_bracer",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2601",
+          "nameZh": "节点女亲王凯威扎",
+          "loot": [
+            {
+              "id": "221023",
+              "nameZh": "奸邪发射机",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_etherealraid_communicator_color1",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212456",
+              "nameZh": "虚空收割者的合约",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_10_inscription2_repcontracts_trade_archaeology_apexisscroll_uprez_color4",
+              "secondaryStats": ""
+            },
+            {
+              "id": "219877",
+              "nameZh": "虚空收割者的迁跃利刃",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "fist_weapon",
+              "icon": "inv_hand_1h_nerubianraid_d_02_blue",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225581",
+              "nameZh": "凯威扎的隐蔽之握",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_mail_raidhunternerubian_d_01_bracer",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225591",
+              "nameZh": "消逝屠戮足垫",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_boot_leather_raidroguenerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225636",
+              "nameZh": "篡国",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "dagger",
+              "icon": "inv_knife_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225589",
+              "nameZh": "扭曲虚空赏金重型腰带",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_belt_plate_raidwarriornerubian_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212400",
+              "nameZh": "影触消音者",
+              "slot": "gun",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "crossbow",
+              "icon": "inv_crossbow_2h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212441",
+              "nameZh": "喑星之夜裹手",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidpriestnerubian_d_01_glove",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2599",
+          "nameZh": "苏雷吉队长席克兰",
+          "loot": [
+            {
+              "id": "212449",
+              "nameZh": "席克兰的无穷军械",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_raid_sikransarsenal_purple",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212392",
+              "nameZh": "决斗者的钢铁之舞",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "sword_1h",
+              "icon": "inv_sword_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212416",
+              "nameZh": "宇宙侵染便鞋",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "cloth",
+              "icon": "inv_cloth_raidwarlocknerubian_d_01_boot",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212405",
+              "nameZh": "无瑕的相位之刃",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "sword_1h",
+              "icon": "inv_sword_1h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212413",
+              "nameZh": "尊崇刽子手的穿孔器",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 571,
+              "weaponType": "polearm",
+              "icon": "inv_polearm_2h_nerubianraid_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "225577",
+              "nameZh": "苏雷吉狂热者的徽章",
+              "slot": "neck",
+              "quality": "epic",
+              "itemLevel": 571,
+              "icon": "inv_nerubian_necklace_01_color4",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212399",
+              "nameZh": "散射丝弓",
               "slot": "bow",
-              "quality": "legendary",
-              "itemLevel": 164
-            },
-            {
-              "id": "34833",
-              "name": "Aegis of the Naaru",
-              "nameZh": "纳鲁之盾",
-              "slot": "off_hand",
               "quality": "epic",
-              "itemLevel": 154
+              "itemLevel": 571,
+              "weaponType": "bow",
+              "icon": "inv_bow_1h_nerubianraid_d_01",
+              "secondaryStats": ""
             },
             {
-              "id": "34834",
-              "name": "Orb of the Sinful",
-              "nameZh": "罪恶灵珠",
-              "slot": "off_hand",
-              "quality": "epic",
-              "itemLevel": 154
-            },
-            {
-              "id": "34839",
-              "name": "Helm of the Forgotten Protector",
-              "nameZh": "被遗忘保护者的头盔",
+              "id": "212427",
+              "nameZh": "扬升队长的面甲",
               "slot": "head",
               "quality": "epic",
-              "itemLevel": 154,
-              "isTier": true,
-              "tierSet": "tier6"
+              "itemLevel": 571,
+              "armorType": "plate",
+              "icon": "inv_plate_raidpaladinnerubian_d_01_helm",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212445",
+              "nameZh": "几丁质尖刺长筒靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "leather",
+              "icon": "inv_leather_raiddemonhunternerubian_d_01_boot",
+              "secondaryStats": ""
+            },
+            {
+              "id": "212415",
+              "nameZh": "王座守护者的腕轮",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 571,
+              "armorType": "mail",
+              "icon": "inv_bracer_mail_raidshamannerubian_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raid_1314",
+      "nameZh": "梦境裂隙",
+      "expansion": "12.0",
+      "bosses": [
+        {
+          "id": "boss_2795",
+          "nameZh": "奇美鲁斯，未梦之神",
+          "loot": [
+            {
+              "id": "249343",
+              "nameZh": "艾林先知的凝视",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_dreamrift_gazeofthealnseer",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249805",
+              "nameZh": "未梦之神的污泥残迹",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_dreamrift-_physdps2_umdreamtgodsoozingvestige",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249278",
+              "nameZh": "艾蔑尖塔法杖",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "staff",
+              "icon": "inv_staff_2h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249922",
+              "nameZh": "艾蔑悔恨魔典",
+              "slot": "tome",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_offhand_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249373",
+              "nameZh": "梦境灼烧长靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_boot_cloth_raidmagemidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249374",
+              "nameZh": "蔑痕舒尔卡的腰带",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_belt_leather_raidmonkmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249371",
+              "nameZh": "灾祸克星护腰",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "icon": "inv_belt_mail_raidhuntermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249381",
+              "nameZh": "未成形者护胫",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_boot_plate_raidwarriormidnight_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raid_1307",
+      "nameZh": "虚影尖塔",
+      "expansion": "12.0",
+      "bosses": [
+        {
+          "id": "boss_2733",
+          "nameZh": "元首阿福扎恩",
+          "loot": [
+            {
+              "id": "249293",
+              "nameZh": "指挥的重担",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "mace_1h",
+              "icon": "inv_mace_1h_raidmidnight_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249344",
+              "nameZh": "圣光连队的旌旗",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_physdps1_armyoflightbanner",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249313",
+              "nameZh": "光之审判肩甲",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_shoulder_plate_raidpaladinmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249306",
+              "nameZh": "吞噬之夜面容",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_helm_leather_raiddemonhuntermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249275",
+              "nameZh": "高尚决心壁垒",
+              "slot": "shield",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "shield",
+              "icon": "inv_shield_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249279",
+              "nameZh": "阳炎打击步枪",
+              "slot": "gun",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "gun",
+              "icon": "inv_firearm_2h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249326",
+              "nameZh": "圣光进军护腕",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_bracer_plate_raidwarriormidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249320",
+              "nameZh": "遮蔽战靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "icon": "inv_boot_mail_raidevokermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249334",
+              "nameZh": "虚侵踢靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_boot_leather_raiddemonhuntermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249323",
+              "nameZh": "吞噬大进护腿",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_pant_cloth_raidmagemidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249335",
+              "nameZh": "元首的战旗",
+              "slot": "cloak",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_plate_raiddeathknightmidnight_d_01_cape",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249319",
+              "nameZh": "无尽进军裹腰",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_belt_cloth_raidpriestmidnight_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2734",
+          "nameZh": "弗拉希乌斯",
+          "loot": [
+            {
+              "id": "249302",
+              "nameZh": "殒命缠身",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "polearm",
+              "icon": "inv_polearm_2h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249925",
+              "nameZh": "饥渴凯旋",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "dagger",
+              "icon": "inv_knife_1h_raidmidnight_d_02",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249342",
+              "nameZh": "上古饥渴之心",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_strdps_hearthofancienthunger",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249336",
+              "nameZh": "饥饿野兽指环",
+              "slot": "finger",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_jewelry_devouringhost_ring_silver2",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249276",
+              "nameZh": "永恒之光魔典",
+              "slot": "tome",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_offhand_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249332",
+              "nameZh": "寄生虫践踏靴",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_boot_plate_raidpaladinmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249317",
+              "nameZh": "狂乱斥责",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "icon": "inv_helm_mail_raidevokermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249327",
+              "nameZh": "虚空皮制护腕",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_bracer_leather_raidroguemidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249315",
+              "nameZh": "暴食护腕",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_bracer_cloth_raidpriestmidnight_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2736",
+          "nameZh": "陨落之王萨哈达尔",
+          "loot": [
+            {
+              "id": "249281",
+              "nameZh": "终焉暮光之刃",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "sword_1h",
+              "icon": "inv_sword_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249298",
+              "nameZh": "折磨者的刃拳",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "fist_weapon",
+              "icon": "inv_hand_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249340",
+              "nameZh": "宇宙疯狂裹布",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_intdps1_wrapsofcosmicmadness",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249341",
+              "nameZh": "不稳定的虚空弥散器",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_healer1_volatilevoidsuffuser",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249337",
+              "nameZh": "盘绕恶意丝带",
+              "slot": "neck",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_jewelry_devouringhost_necklace_bronze",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249316",
+              "nameZh": "破碎暴君之冠",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_plate_raiddeathknightmidnight_d_01_helm",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249304",
+              "nameZh": "陨落之王的护腕",
+              "slot": "wrist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "icon": "inv_bracer_mail_raidshamanmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249314",
+              "nameZh": "扭曲暮光腰带",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_belt_leather_raiddemonhuntermidnight_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2735",
+          "nameZh": "威厄高尔和艾佐拉克",
+          "loot": [
+            {
+              "id": "249280",
+              "nameZh": "纹饰日之刃",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "warglaive",
+              "icon": "inv_glaive_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249287",
+              "nameZh": "同巢爱抚",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "mace_1h",
+              "icon": "inv_mace_1h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249339",
+              "nameZh": "溅暗恐惧之鳞",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_tank1_smolderinggloomscale",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249346",
+              "nameZh": "威厄高尔的最终凝视",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "icon": "inv_12_trinket_raid_voidspire_int1_voiddragoneye",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249331",
+              "nameZh": "艾佐拉克的幽暗腰铠",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "icon": "inv_belt_plate_raidwarriormidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249318",
+              "nameZh": "虚无行者的恐惧肩章",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "icon": "inv_shoulder_mail_raidevokermidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249321",
+              "nameZh": "维尔戈的恐怖之握",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "icon": "inv_glove_leather_raiddruidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249305",
+              "nameZh": "午夜烈焰便鞋",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_boot_cloth_raidwarlockmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249370",
+              "nameZh": "龙族虚无披风",
+              "slot": "cloak",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "icon": "inv_cape_plate_raidpaladinmidnight_d_01",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2737",
+          "nameZh": "光盲先锋军",
+          "loot": [
+            {
+              "id": "249277",
+              "nameZh": "贝莱梅的最终审判",
+              "slot": "two_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "mace_2h",
+              "icon": "inv_mace_2h_raidmidnight_d_01",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249294",
+              "nameZh": "盲目裁决之刃",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "sword_1h",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249808",
+              "nameZh": "光盲圣怒的连祷",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "secondaryStats": ""
+            },
+            {
+              "id": "249369",
+              "nameZh": "圣光纽带",
+              "slot": "finger",
+              "quality": "epic",
+              "itemLevel": 197,
+              "secondaryStats": ""
+            },
+            {
+              "id": "249311",
+              "nameZh": "光血护胫",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249303",
+              "nameZh": "被审判者的腰索",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249333",
+              "nameZh": "盛放的树皮光芒肩甲",
+              "slot": "shoulder",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249330",
+              "nameZh": "战争牧师的护手",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "secondaryStats": ""
+            }
+          ]
+        },
+        {
+          "id": "boss_2738",
+          "nameZh": "宇宙之冕",
+          "loot": [
+            {
+              "id": "249288",
+              "nameZh": "游侠队长的致命反曲弓",
+              "slot": "bow",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "bow",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249295",
+              "nameZh": "图拉扬的虚假回响",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "mace_1h",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249809",
+              "nameZh": "双界行者的丝带",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "secondaryStats": ""
+            },
+            {
+              "id": "249345",
+              "nameZh": "游侠将军的虹彩徽章",
+              "slot": "relic",
+              "quality": "epic",
+              "itemLevel": 197,
+              "secondaryStats": ""
+            },
+            {
+              "id": "249368",
+              "nameZh": "永恒虚空之歌项链",
+              "slot": "neck",
+              "quality": "epic",
+              "itemLevel": 197,
+              "secondaryStats": ""
+            },
+            {
+              "id": "249380",
+              "nameZh": "仇恨束缚腰链",
+              "slot": "waist",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249309",
+              "nameZh": "日缚胸铠",
+              "slot": "chest",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "plate",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249325",
+              "nameZh": "无拘狂暴者的护手",
+              "slot": "hands",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "mail",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249312",
+              "nameZh": "夜刃的长裤",
+              "slot": "legs",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249382",
+              "nameZh": "树冠行者裹足",
+              "slot": "feet",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "leather",
+              "secondaryStats": ""
+            },
+            {
+              "id": "249329",
+              "nameZh": "放纵者的凝视",
+              "slot": "head",
+              "quality": "epic",
+              "itemLevel": 197,
+              "armorType": "cloth",
+              "secondaryStats": ""
+            },
+            {
+              "id": "260423",
+              "nameZh": "阿拉托尔的迅疾纪念",
+              "slot": "one_hand",
+              "quality": "epic",
+              "itemLevel": 197,
+              "weaponType": "sword_1h",
+              "secondaryStats": ""
             }
           ]
         }
@@ -218,7 +1574,7 @@
     "gun": "枪械",
     "wand": "魔杖",
     "shield": "盾牌",
-    "relic": "圣物"
+    "relic": "饰品/圣物"
   },
   "classArmorTypes": {
     "warrior": [

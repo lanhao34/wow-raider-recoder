@@ -31,6 +31,7 @@ services:
       - JWT_SECRET=${JWT_SECRET:-devsecret_local2026}
       - PORT=3001
       - CI=true
+      - CHOKIDAR_USEPOLLING=true
     depends_on:
       postgres:
         condition: service_healthy

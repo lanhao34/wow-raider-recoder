@@ -17,7 +17,7 @@ export default function Layout() {
 
   const navItems = [
     { to: '/calendar', label: '活动日历', icon: CalendarDays },
-    { to: '/my-characters', label: '我的角色', icon: Users, highlight: true },
+    { to: '/my-characters', label: '我的角色', icon: Users },
     ...(!member ? [] : [
       { to: '/requirements', label: '装备需求', icon: ListChecks },
       { to: '/tier', label: '套装追踪', icon: Shield },
@@ -47,16 +47,14 @@ export default function Layout() {
 
         {/* Nav */}
         <nav className="flex-1 p-3 space-y-1">
-          {navItems.map(({ to, label, icon: Icon, highlight }) => (
+          {navItems.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-primary/20 text-primary border border-primary/30 shadow-sm'
-                    : highlight
-                    ? 'bg-purple-900/30 text-purple-300 border border-purple-700/50 hover:bg-purple-900/50'
+                    ? 'bg-purple-900/40 text-purple-300 border border-purple-700/50 shadow-sm'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`
               }

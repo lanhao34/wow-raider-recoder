@@ -158,6 +158,8 @@ export default function DataManagementPage() {
     setStatus(null);
   };
 
+
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -360,30 +362,10 @@ export default function DataManagementPage() {
             </div>
           )}
         </div>
+        
+
       </div>
 
-      {/* Danger Zone */}
-      <div className="card border-red-900/50">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-            <Trash2 className="text-red-400" size={20} />
-          </div>
-          <div>
-            <h2 className="font-semibold text-red-400">危险操作</h2>
-            <p className="text-xs text-red-400/70">这些操作不可逆，请谨慎</p>
-          </div>
-        </div>
-
-        <button
-          className="btn-danger flex items-center gap-2"
-          onClick={() => {
-            if (confirm('确认退出登录？')) handleLogout();
-          }}
-        >
-          <Trash2 size={16} />
-          退出登录
-        </button>
-      </div>
     </div>
   );
 }

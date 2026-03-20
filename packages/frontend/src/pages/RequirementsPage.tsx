@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useAuthStore } from '../store/auth';
 import { requirementsApi } from '../api';
-import { RAIDS, SLOT_NAMES, QUALITY_COLORS, QUALITY_BORDERS, QUALITY_BG, type ItemSlot } from '@guild/shared';
+import { SLOT_NAMES, QUALITY_COLORS, QUALITY_BORDERS, QUALITY_BG, type ItemSlot } from '@guild/shared';
+import { useGameDataStore } from '../store/gameData';
 import { ListChecks, Plus, Trash2, Star, Search, X, Users } from 'lucide-react';
 
 interface Member {
@@ -42,19 +44,20 @@ const PRIORITY_COLORS: Record<string, string> = {
   low: 'text-green-400 bg-green-900/20 border-green-800/50',
 };
 
-// 扁平化所有装备
-const ALL_ITEMS = RAIDS.flatMap((raid) =>
-  raid.bosses.flatMap((boss) =>
-    boss.loot.map((item) => ({
-      ...item,
-      raidName: raid.nameZh || raid.name,
-      bossName: boss.nameZh || boss.name,
-    }))
-  )
-);
-
 export default function RequirementsPage() {
   const { member, members, token } = useAuthStore();
+  const raids = useGameDataStore((s) => s.raids);
+  
+  const ALL_ITEMS = useMemo(() => raids.flatMap((raid) =>
+    raid.bosses.flatMap((boss: any) =>
+      boss.loot.map((item: any) => ({
+        ...item,
+        raidName: raid.name,
+        bossName: boss.name,
+      }))
+    )
+  ), [raids]);
+
   const [requirements, setRequirements] = useState<Requirement[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
   const [showPicker, setShowPicker] = useState(false);
@@ -195,7 +198,7 @@ export default function RequirementsPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className={`font-medium ${QUALITY_COLORS[req.priority === 'bis' ? 'epic' : 'rare'] || 'text-purple-200'}`}>
-                      {req.itemName}
+                      {item ? item.name : req.itemName}
                     </span>
                     {item?.isTier && (
                       <span className="badge-tier flex items-center gap-1">
@@ -243,7 +246,7 @@ export default function RequirementsPage() {
 
             <div className="overflow-y-auto flex-1 p-4">
               {/* 按副本和 BOSS 分组显示 */}
-              {RAIDS.map((raid) => {
+              {raids.map((raid) => {
                 const raidItems = filtered.filter((item) => item.raidName === (raid.nameZh || raid.name));
                 if (raidItems.length === 0) return null;
 
@@ -254,8 +257,8 @@ export default function RequirementsPage() {
                       {raid.nameZh || raid.name}
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {raid.bosses.map((boss) => {
-                        const bossItems = raidItems.filter((item) => item.bossName === (boss.nameZh || boss.name));
+                      {raid.bosses.map((boss: any) => {
+                        const bossItems = raidItems.filter((item) => item.bossName === boss.name);
                         if (bossItems.length === 0) return null;
 
                         return (

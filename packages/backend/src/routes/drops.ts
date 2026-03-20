@@ -50,11 +50,13 @@ router.post(
         slot: string; 
         isTier?: boolean;
         baseItemLevel?: number;
+        itemLevel?: number;
         quality?: string;
         armorType?: string;
+        weaponType?: string;
       }) => {
         const baseItemLevel = item.baseItemLevel || 0;
-        const itemLevel = getItemLevelForDifficulty(baseItemLevel, difficulty);
+        const itemLevel = item.itemLevel ?? getItemLevelForDifficulty(baseItemLevel, difficulty);
         
         return {
           raidKillId,
@@ -67,6 +69,7 @@ router.post(
           bonusDrop: false,
           quality: item.quality || 'epic',
           armorType: item.armorType || null,
+          weaponType: item.weaponType || null,
         };
       }),
     });

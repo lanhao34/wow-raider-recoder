@@ -279,28 +279,45 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
 // PUT /api/members/:id - 更新成员（管理员可见）
 router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res) => {
   const id = parseInt(req.params.id);
-  const { displayName, wowClass, wowClassZh, status } = req.body;
+  const { displayName, wowClass, wowClassZh, status, userId } = req.body;
   
+  const updateData: any = {
+    displayName,
+    wowClass,
+    wowClassZh,
+    status,
+  };
+  
+  console.log(`[UPDATE Member ${id}] req.body.userId:`, userId, typeof userId);
+
+  if (userId !== undefined) {
+    if (userId === null) {
+      updateData.user = { disconnect: true };
+      updateData.source = 'created';
+      console.log(`[UPDATE Member ${id}] applying disconnect for user relation`);
+    } else {
+      updateData.userId = userId;
+      updateData.source = 'claimed';
+    }
+  }
+
   const member = await prisma.member.update({
     where: { id },
-    data: {
-      displayName,
-      wowClass,
-      wowClassZh,
-      status,
-    },
+    data: updateData,
   });
   
   res.json(member);
 });
 
-// DELETE /api/members/:id - 删除成员（管理员可见）
-router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+// DELETE /api/members/:id - 删除成员（管理员或归属用户操作）
+router.delete('/:id', authenticate, async (req: AuthRequest, res) => {
   const id = parseInt(req.params.id);
   
   const member = await prisma.member.findUnique({
     where: { id },
     include: {
+      raidParticipants: true,
+      distributions: true,
       user: {
         select: {
           isAdmin: true,
@@ -312,20 +329,24 @@ router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res) 
   if (!member) {
     return res.status(404).json({ error: '角色不存在' });
   }
-  
-  // 超管可以删除任何角色
-  if (req.isAdmin) {
-    await prisma.member.delete({ where: { id } });
-    return res.json({ success: true });
+
+  // 1. Permission check: Overlord/Admin or Self
+  if (!req.isAdmin && member.userId !== req.userId) {
+    return res.status(403).json({ error: '无权操作此角色' });
   }
   
-  // 管理员不能删除超管用户的角色
-  if (member.user?.isAdmin) {
+  // 管理员不能删除超级管理员的角色（除非是管理自己的角色）
+  if (req.isAdmin && member.user?.isAdmin && req.userId !== member.userId) {
     return res.status(403).json({ error: '不能删除超级管理员的角色' });
+  }
+
+  // 2. Dependency check (Data Safety)
+  if (member.raidParticipants.length > 0 || member.distributions.length > 0) {
+    return res.status(400).json({ error: '该角色已有团队活动记录，为保护历史数据禁止硬删除。建议使用该角色的“退回/解除绑定”功能或将其状态修改为非活跃归档。' });
   }
   
   await prisma.member.delete({ where: { id } });
-  res.json({ success: true });
+  res.json({ success: true, message: '删除成功' });
 });
 
 // PUT /api/members/:id/set-admin - 指定/取消管理员（仅超管）

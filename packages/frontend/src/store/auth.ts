@@ -30,11 +30,11 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: null,
+  token: localStorage.getItem('token'),
   user: null,
   member: null,
   members: [],
-  isLoading: false,
+  isLoading: !!localStorage.getItem('token'),
   isAdmin: false,
 
   login: async (username, password) => {
@@ -82,7 +82,10 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loadFromStorage: async () => {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      set({ isLoading: false });
+      return;
+    }
     set({ isLoading: true });
     try {
       const data = await authApi.me();

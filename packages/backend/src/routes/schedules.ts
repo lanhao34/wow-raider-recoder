@@ -45,10 +45,10 @@ router.get('/', authenticate, async (req: AuthRequest, res) => {
 router.post('/', authenticate, requireAdmin, async (req: AuthRequest, res) => {
   const {
     date,
-    raidId = 'sunwell',
-    raidName = 'Sunwell Plateau',
-    raidNameZh = '太阳井高地',
-    difficulty = 'normal',
+    raidId,
+    raidName,
+    raidNameZh,
+    difficulty,
     teamName,
     maxPlayers = 20,
     maxSubstitutes = 10,
@@ -72,10 +72,10 @@ router.post('/', authenticate, requireAdmin, async (req: AuthRequest, res) => {
     data: {
       date,
       weekId,
-      raidId,
-      raidName,
-      raidNameZh,
-      difficulty,
+      raidId: raidId || null,
+      raidName: raidName || null,
+      raidNameZh: raidNameZh || null,
+      difficulty: difficulty || null,
       teamName: teamName || null,
       maxPlayers,
       maxSubstitutes,
@@ -118,6 +118,17 @@ router.get('/:id', authenticate, async (req: AuthRequest, res) => {
         },
       },
       raids: true,
+      kills: {
+        include: {
+          drops: {
+            include: {
+              distribution: {
+                include: { member: true }
+              }
+            }
+          }
+        }
+      },
     },
   });
   
@@ -178,6 +189,31 @@ router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res) 
   
   res.json({ success: true });
 });
+
+// POST /api/schedules/:id/raids - 添加包含的团本
+router.post('/:id/raids', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  const scheduleId = parseInt(req.params.id);
+  const { raidId, raidName, difficulty } = req.body;
+  if (!raidId || !raidName || !difficulty) return res.status(400).json({ error: 'Missing parameters' });
+
+  const existing = await prisma.scheduleRaid.findUnique({
+    where: { scheduleId_raidId_difficulty: { scheduleId, raidId, difficulty } }
+  });
+  if (existing) return res.status(400).json({ error: 'Raid already added' });
+
+  const added = await prisma.scheduleRaid.create({
+    data: { scheduleId, raidId, raidName, difficulty }
+  });
+  res.json(added);
+});
+
+// DELETE /api/schedules/:id/raids/:recordId - 移除包含的团本
+router.delete('/:id/raids/:recordId', authenticate, requireAdmin, async (req: AuthRequest, res) => {
+  const recordId = parseInt(req.params.recordId);
+  await prisma.scheduleRaid.delete({ where: { id: recordId } });
+  res.json({ success: true });
+});
+
 
 // POST /api/schedules/:id/participants - 报名活动
 router.post('/:id/participants', authenticate, async (req: AuthRequest, res) => {
