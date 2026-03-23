@@ -96,12 +96,12 @@ export const dropsApi = {
 
 // Distributions
 export const distributionsApi = {
-  create: (data: { dropId: number; memberId: number }) =>
+  create: (data: { dropId: number; memberId: number; method?: 'need' | 'greed' | 'force' }) =>
     api.post('/distributions', data).then((r) => r.data),
   list: (params?: { memberId?: number; week?: string }) =>
     api.get('/distributions', { params }).then((r) => r.data),
-  updateStatus: (id: number, status: string) =>
-    api.put(`/distributions/${id}`, { status }).then((r) => r.data),
+  updateStatus: (id: number, status?: string, method?: 'need' | 'greed' | 'force') =>
+    api.put(`/distributions/${id}`, { status, method }).then((r) => r.data),
   delete: (id: number) => api.delete(`/distributions/${id}`),
 };
 

@@ -55,7 +55,7 @@ export const WoWItemCard: React.FC<WoWItemCardProps> = ({
 
   return (
     <div 
-      className={`group relative flex flex-col bg-[#07070b] border ${borderColor} rounded-md p-3 w-full sm:max-w-[300px] transition-all duration-200 ${selected ? 'ring-2 ring-emerald-500 scale-[1.02]' : ''} ${className}`}
+      className={`group relative flex flex-col h-full bg-[#07070b] border ${borderColor} rounded-md p-3 w-full sm:max-w-[300px] transition-all duration-200 ${selected ? 'ring-2 ring-emerald-500 scale-[1.02]' : ''} ${className}`}
       onClick={onClick}
     >
       {/* Hover Actions */}
@@ -103,14 +103,12 @@ export const WoWItemCard: React.FC<WoWItemCardProps> = ({
       </div>
       
       {/* Stats Block */}
-      <div className="flex flex-col gap-0.5 text-[13px] tracking-wide mt-1">
+      <div className="flex flex-col flex-1 gap-0.5 text-[13px] tracking-wide mt-1">
         <span className="text-white">+{staVal} 耐力</span>
         <span className="text-white">{primaryStatsLine}</span>
         
-        {item.secondaryStats ? (
+        {item.secondaryStats && (
            <span className="text-[#1eff00] mt-1">{item.secondaryStats}</span>
-        ) : (
-           <span className="text-[#1eff00] mt-1 opacity-50 italic">装备效果...</span>
         )}
       </div>
       

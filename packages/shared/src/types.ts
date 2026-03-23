@@ -157,6 +157,7 @@ export interface DistributionResponse {
   memberName: string;
   distributedAt: string;
   status: DistributionStatus;
+  method?: 'need' | 'greed' | 'force';
 }
 
 export interface RequirementResponse {

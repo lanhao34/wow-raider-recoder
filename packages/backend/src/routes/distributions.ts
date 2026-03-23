@@ -12,11 +12,12 @@ router.post(
   body('dropId').isInt(),
   body('memberId').isInt(),
   body('status').optional().isIn(['assigned', 'received']),
+  body('method').optional().isIn(['need', 'greed', 'force']),
   async (req: AuthRequest, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    const { dropId, memberId, status = 'assigned' } = req.body;
+    const { dropId, memberId, status = 'assigned', method = 'need' } = req.body;
 
     // Check drop exists
     const drop = await prisma.drop.findUnique({ where: { id: dropId } });
@@ -27,7 +28,7 @@ router.post(
     if (existing) return res.status(400).json({ error: 'Drop already distributed' });
 
     const distribution = await prisma.distribution.create({
-      data: { dropId, memberId, distributedBy: req.userId!, status },
+      data: { dropId, memberId, distributedBy: req.userId!, status, method },
       include: { member: true, drop: true },
     });
     return res.status(201).json(distribution);
@@ -84,15 +85,20 @@ router.get('/', authenticate, async (req, res) => {
 router.put(
   '/:id',
   requireAdmin,
-  body('status').isIn(['assigned', 'received']),
+  body('status').optional().isIn(['assigned', 'received']),
+  body('method').optional().isIn(['need', 'greed', 'force']),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const id = parseInt(req.params.id);
+    const dataToUpdate: any = {};
+    if (req.body.status) dataToUpdate.status = req.body.status;
+    if (req.body.method) dataToUpdate.method = req.body.method;
+
     const distribution = await prisma.distribution.update({
       where: { id },
-      data: { status: req.body.status },
+      data: dataToUpdate,
       include: { member: true, drop: true },
     });
     return res.json(distribution);

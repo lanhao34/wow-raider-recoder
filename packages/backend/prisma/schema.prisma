@@ -141,6 +141,7 @@ model Distribution {
   distributedAt DateTime @default(now()) @map("distributed_at")
   distributedBy Int      @map("distributed_by")
   status        String   @default("assigned")
+  method        String?  @default("need")
   drop          Drop     @relation(fields: [dropId], references: [id], onDelete: Cascade)
   member        Member   @relation(fields: [memberId], references: [id])
 

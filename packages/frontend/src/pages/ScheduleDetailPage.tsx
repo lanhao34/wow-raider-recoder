@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { schedulesApi, raidKillsApi, dropsApi, distributionsApi, membersApi } from '../api';
 import { useAuthStore } from '../store/auth';
 import { RAIDS, type WoWItem, type ItemSlot } from '@guild/shared';
-import { DIFFICULTY_NAMES, SLOT_NAMES, WOW_CLASS_COLORS, CLASS_WEAPON_TYPES, CLASS_ARMOR_TYPES, WEAPON_TYPE_NAMES, ARMOR_TYPE_NAMES, ALL_ITEMS } from '@guild/shared';
+import { DIFFICULTY_NAMES, SLOT_NAMES, WOW_CLASS_COLORS, CLASS_WEAPON_TYPES, CLASS_ARMOR_TYPES, WEAPON_TYPE_NAMES, ARMOR_TYPE_NAMES, ALL_ITEMS, getEquipSuitability } from '@guild/shared';
+import type { EquipSuitability } from '@guild/shared';
 import { WoWItemCard } from '../components/WoWItemCard';
 import type { Difficulty, WowClass } from '@guild/shared';
 
@@ -67,6 +68,19 @@ export default function ScheduleDetailPage() {
   const [distributeModal, setDistributeModal] = useState<Drop | null>(null);
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null);
 
+  // ESC Keyboard shortcuts for modals
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (dropModal) { setDropModal(null); setPendingDrops([]); }
+        if (distributeModal) { setDistributeModal(null); setSelectedMemberId(null); }
+        if (showAddRaid) setShowAddRaid(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [dropModal, distributeModal, showAddRaid]);
+
   useEffect(() => {
     const numId = parseInt(id!);
     Promise.all([schedulesApi.get(numId), membersApi.publicList()])
@@ -98,7 +112,7 @@ export default function ScheduleDetailPage() {
   const handleAddRaid = async () => {
     const raid = RAIDS.find((r) => r.id === addRaidId);
     if (!raid || !schedule) return;
-    await schedulesApi.addRaid(schedule.id, { raidId: addRaidId, raidName: raid.name, difficulty: addDifficulty });
+    await schedulesApi.addRaid(schedule.id, { raidId: addRaidId, raidName: raid.nameZh || raid.name || '未知团本', difficulty: addDifficulty });
     await refresh();
     setShowAddRaid(false);
   };
@@ -122,7 +136,7 @@ export default function ScheduleDetailPage() {
     if (!dropModal || pendingDrops.length === 0) return;
     const items = pendingDrops.map((item) => ({
       itemId: item.id,
-      itemName: item.name,
+      itemName: item.nameZh || item.name || '未知物品',
       slot: item.slot,
       isTier: item.isTier || false,
       itemLevel: item.itemLevel,
@@ -148,9 +162,13 @@ export default function ScheduleDetailPage() {
     await refresh();
   };
 
-  const handleDistribute = async () => {
-    if (!distributeModal || !selectedMemberId) return;
-    await distributionsApi.create({ dropId: distributeModal.id, memberId: selectedMemberId });
+  const handleDistribute = async (overrideMemberId?: number) => {
+    const targetId = overrideMemberId || selectedMemberId;
+    if (!distributeModal || !targetId) return;
+    if (distributeModal.distribution) {
+      await distributionsApi.delete(distributeModal.distribution.id);
+    }
+    await distributionsApi.create({ dropId: distributeModal.id, memberId: targetId });
     await refresh();
     setDistributeModal(null);
     setSelectedMemberId(null);
@@ -159,6 +177,7 @@ export default function ScheduleDetailPage() {
   const renderItemType = (item: any) => {
     if (item.weaponType) return WEAPON_TYPE_NAMES[item.weaponType as keyof typeof WEAPON_TYPE_NAMES] || item.weaponType;
     if (item.armorType) return ARMOR_TYPE_NAMES[item.armorType as keyof typeof ARMOR_TYPE_NAMES] || item.armorType;
+    if (item.slot === 'relic' || item.slot === 'trinket') return '饰品';
     return SLOT_NAMES[item.slot as keyof typeof SLOT_NAMES] || item.slot;
   };
 
@@ -266,7 +285,7 @@ export default function ScheduleDetailPage() {
         </div>
       ) : (
         (schedule?.raids || []).map((sr) => {
-          const raid = RAIDS.find((r) => r.id === sr.raidId);
+          const raid = RAIDS.find((r) => r.id === sr.raidId || r.id === `raid_${sr.raidId}` || r.nameZh === sr.raidName || r.name === sr.raidName);
           const killKey = `${sr.raidId}-${sr.difficulty}`;
           const kills = killGroups[killKey] || [];
 
@@ -279,7 +298,7 @@ export default function ScheduleDetailPage() {
                   {DIFFICULTY_NAMES[sr.difficulty]}
                 </span>
                 <span className="text-xs text-[#475569] ml-auto">
-                  {kills.length}/{raid?.bosses.length} Boss 已击杀
+                  {new Set(kills.map(k => k.bossId)).size}/{raid?.bosses?.length || 0} Boss 已击杀
                 </span>
               </div>
 
@@ -293,13 +312,16 @@ export default function ScheduleDetailPage() {
                     <div key={boss.id} className={`rounded-lg border transition-colors ${
                       kill ? 'border-green-800/50 bg-green-900/10' : 'border-[#2a2a4a]'
                     }`}>
-                      <div className="flex items-center gap-3 p-3">
+                      <div 
+                        className="flex items-center gap-3 p-3 cursor-pointer group/boss hover:bg-white/5 transition-colors"
+                        onClick={() => kill && setExpandedKill(isExpanded ? null : kill.id)}
+                      >
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 ${
                           kill ? 'bg-green-500 border-green-400' : 'border-[#475569]'
                         }`}>
                           {kill && <Check size={12} className="text-white" />}
                         </div>
-                        <span className="text-sm font-medium flex-1">{boss.name}</span>
+                        <span className="text-sm font-medium flex-1">{boss.nameZh || boss.name}</span>
 
                         {kill ? (
                           <>
@@ -309,23 +331,23 @@ export default function ScheduleDetailPage() {
                             )}
                             {isAdmin && (
                               <button
-                                className="text-xs btn-secondary py-1 px-2"
-                                onClick={() => { setPendingDrops([]); setDropModal(kill); }}
+                                className="text-xs btn-secondary py-1 px-2 relative z-10"
+                                onClick={(e) => { e.stopPropagation(); setPendingDrops([]); setDropModal(kill); }}
                               >
                                 + 掉落
                               </button>
                             )}
                             <button
-                              className="text-[#475569] hover:text-white transition-colors p-1"
-                              onClick={() => setExpandedKill(isExpanded ? null : kill.id)}
+                              className="text-[#475569] hover:text-white transition-colors p-1 relative z-10"
+                              onClick={(e) => { e.stopPropagation(); setExpandedKill(isExpanded ? null : kill.id); }}
                             >
                               {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                             </button>
                           </>
                         ) : isAdmin ? (
                           <button
-                            className="text-xs btn-primary py-1 px-3"
-                            onClick={() => handleBossClick(sr, boss.id, boss.name)}
+                            className="text-xs btn-primary py-1 px-3 relative z-10"
+                            onClick={(e) => { e.stopPropagation(); handleBossClick(sr, boss.id, boss.nameZh || boss.name || '未知Boss'); }}
                           >
                             标记击杀
                           </button>
@@ -340,11 +362,25 @@ export default function ScheduleDetailPage() {
                           {kill.drops.length === 0 ? (
                             <p className="text-xs text-[#475569]">暂无掉落记录</p>
                           ) : (
-                            <div className="flex flex-wrap gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
                               {kill.drops.map((drop) => {
                                 const itemData = ALL_ITEMS.find((i) => i.id === drop.itemId);
-                                const enrichedDrop = {
+                                
+                                // Auto-correct legacy TWW 11.0 drops in DB to compressed 12.0 ILVLs (~250)
+                                let realIlvl = drop.itemLevel;
+                                if (realIlvl >= 500) {
+                                  const bossIdx = raid?.bosses.findIndex(b => b.id === kill.bossId) ?? 0;
+                                  const diffOffset = sr.difficulty === 'normal' ? 0 : sr.difficulty === 'heroic' ? 13 : sr.difficulty === 'mythic' ? 26 : 0;
+                                  let bossOffset = 0;
+                                  if (bossIdx >= 4 && bossIdx <= 5) bossOffset = 3;
+                                  if (bossIdx >= 6 && bossIdx <= 6) bossOffset = 6;
+                                  if (bossIdx >= 7) bossOffset = 9;
+                                  realIlvl = 250 + diffOffset + bossOffset;
+                                }
+
+                                const enrichedDrop: any = {
                                   ...drop,
+                                  itemLevel: realIlvl,
                                   icon: itemData?.icon,
                                   primaryStats: itemData?.primaryStats,
                                   stamina: itemData?.stamina,
@@ -353,29 +389,49 @@ export default function ScheduleDetailPage() {
                                 return (
                                   <WoWItemCard
                                     key={drop.id}
-                                    item={enrichedDrop}
+                                    item={enrichedDrop as any}
                                     renderItemType={renderItemType}
-                                    onDelete={isAdmin && !drop.distribution ? () => handleDeleteDrop(drop.id) : undefined}
+                                    onDelete={isAdmin ? () => handleDeleteDrop(drop.id) : undefined}
                                     actionButton={
                                       drop.distribution ? (
                                         <div 
                                           className="flex items-center justify-between gap-1.5 text-xs bg-black/40 px-3 py-2 rounded-md border border-white/5 cursor-pointer hover:bg-black/60 hover:border-purple-500/50 transition-all select-none group/dist"
                                           onDoubleClick={() => {
                                             if (isAdmin) {
-                                              setDistributeModal(drop);
+                                              setDistributeModal(enrichedDrop);
                                               setSelectedMemberId(drop.distribution!.member.id);
                                             }
                                           }}
                                           title={isAdmin ? "双击重新换绑" : ""}
                                         >
-                                          <div className="flex items-center gap-2">
-                                            <Package size={12} className="text-purple-400" />
+                                          <div className="flex items-center gap-2 flex-1">
+                                            <Package size={12} className="text-purple-400 shrink-0" />
                                             <div
-                                              className="font-bold tracking-wide"
+                                              className="font-bold tracking-wide truncate max-w-[80px]"
                                               style={{ color: WOW_CLASS_COLORS[drop.distribution.member.wowClass as WowClass] || '#4ade80' }}
                                             >
                                               {drop.distribution.member.displayName}
                                             </div>
+                                            <select
+                                              className="ml-auto bg-black/60 border border-[#2a2a4a] text-[10px] text-[#94a3b8] rounded px-1 py-0.5 outline-none hover:border-purple-500/50 transition-colors cursor-pointer"
+                                              value={(drop.distribution as any).method || 'need'}
+                                              onClick={(e) => e.stopPropagation()}
+                                              onChange={async (e) => {
+                                                e.stopPropagation();
+                                                try {
+                                                  await distributionsApi.updateStatus(drop.distribution!.id, undefined, e.target.value as any);
+                                                  await refresh();
+                                                } catch (err) {
+                                                  console.error('Failed to update method', err);
+                                                }
+                                              }}
+                                              disabled={!isAdmin}
+                                              title={isAdmin ? "更改分配方式" : ""}
+                                            >
+                                              <option value="need">需求</option>
+                                              <option value="greed">贪婪</option>
+                                              <option value="force">强插</option>
+                                            </select>
                                           </div>
                                           {isAdmin && (
                                             <button 
@@ -461,11 +517,22 @@ export default function ScheduleDetailPage() {
                     <span className="text-[11px] text-[#64748b]">双击卡片极速分配</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {participants.map((m) => (
-                      <div key={m.id} onDoubleClick={() => { setSelectedMemberId(m.id); setTimeout(handleDistribute, 0); }}>
-                        <MemberOption member={m} selected={selectedMemberId === m.id} onSelect={setSelectedMemberId} highlight />
-                      </div>
-                    ))}
+                    {participants.map((m) => {
+                      const suitability = distributeModal ? getEquipSuitability(m.wowClass, distributeModal as any) : 'main_spec';
+                      return (
+                        <div 
+                          key={m.id} 
+                          onDoubleClick={() => {
+                            if (suitability === 'cannot_equip') {
+                              if (!confirm(`【越权分配警告】检测到此玩家（${m.wowClassZh}）无法装备该武器或护甲，确定要强行指派分配吗？`)) return;
+                            }
+                            handleDistribute(m.id);
+                          }}
+                        >
+                          <MemberOption member={m} selected={selectedMemberId === m.id} onSelect={setSelectedMemberId} highlight suitability={suitability} />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -477,11 +544,22 @@ export default function ScheduleDetailPage() {
                     <div className="h-px bg-gradient-to-l from-[#2a2a4a] to-transparent flex-1"></div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-[#2a2a4a] pr-1">
-                    {nonParticipants.map((m) => (
-                      <div key={m.id} onDoubleClick={() => { setSelectedMemberId(m.id); setTimeout(handleDistribute, 0); }}>
-                        <MemberOption member={m} selected={selectedMemberId === m.id} onSelect={setSelectedMemberId} />
-                      </div>
-                    ))}
+                    {nonParticipants.map((m) => {
+                      const suitability = distributeModal ? getEquipSuitability(m.wowClass, distributeModal as any) : 'main_spec';
+                      return (
+                        <div 
+                          key={m.id} 
+                          onDoubleClick={() => {
+                            if (suitability === 'cannot_equip') {
+                              if (!confirm(`【越权分配警告】检测到此玩家（${m.wowClassZh}）无法装备该武器或护甲，确定要强行指派分配吗？`)) return;
+                            }
+                            handleDistribute(m.id);
+                          }}
+                        >
+                          <MemberOption member={m} selected={selectedMemberId === m.id} onSelect={setSelectedMemberId} suitability={suitability} />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -491,7 +569,7 @@ export default function ScheduleDetailPage() {
             <div className="p-4 bg-[#0a0a14] border-t border-[#2a2a4a] relative z-20 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
               <button 
                 className="w-full h-[46px] rounded-xl font-bold flex items-center justify-center transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)] disabled:opacity-20 disabled:cursor-not-allowed disabled:shadow-none border border-purple-500/50" 
-                onClick={handleDistribute} 
+                onClick={() => handleDistribute()} 
                 disabled={!selectedMemberId}
               >
                 确认下发装备
@@ -505,24 +583,45 @@ export default function ScheduleDetailPage() {
 }
 
 function MemberOption({
-  member, selected, onSelect, highlight = false,
+  member, selected, onSelect, highlight = false, suitability = 'main_spec'
 }: {
   member: Member;
   selected: boolean;
   onSelect: (id: number) => void;
   highlight?: boolean;
+  suitability?: EquipSuitability;
 }) {
   const color = WOW_CLASS_COLORS[member.wowClass as WowClass] || '#94a3b8';
+  
+  const getSuitabilityStyles = () => {
+    if (selected) return 'bg-purple-900/40 border-purple-600';
+    if (suitability === 'cannot_equip') return 'bg-black/20 border-transparent opacity-40 grayscale hover:opacity-80';
+    if (suitability === 'main_spec') {
+      const base = highlight ? 'bg-[#1a2a1a]/50 hover:bg-[#2a3a2a]/60' : 'bg-[#1a1a2e]/60 hover:bg-[#2a2a4e]/70';
+      return `${base} border-purple-500/30 shadow-[0_0_8px_rgba(168,85,247,0.15)] ring-1 ring-purple-500/20 z-10`;
+    }
+    if (suitability === 'off_spec') {
+      return highlight ? 'border-yellow-600/30 bg-yellow-900/10 hover:bg-yellow-900/20' : 'border-yellow-600/20 hover:bg-yellow-900/10';
+    }
+    return highlight ? 'border-[#2a2a4a] bg-[#1a2a1a]/40 hover:bg-[#2a3a2a]/40' : 'border-transparent hover:bg-[#2a2a4a]';
+  };
+
+  const getSuitabilityLabel = () => {
+    if (suitability === 'cannot_equip') return '🚫 不可用';
+    if (suitability === 'main_spec') return `🌟 ${member.wowClassZh}`;
+    if (suitability === 'off_spec') return `⚠️ 次选/跨甲`;
+    return member.wowClassZh;
+  };
+  
+  const labelColor = suitability === 'cannot_equip' ? color + '80' : 
+                     suitability === 'main_spec' ? '#e9d5ff' : // purple-200
+                     suitability === 'off_spec' ? '#fde047' : // yellow-300
+                     color + '80';
+
   return (
     <button
-      onClick={() => onSelect(member.id)}
-      className={`w-full text-left px-3 py-2 rounded-lg border transition-all text-sm flex items-center gap-3 ${
-        selected
-          ? 'bg-purple-900/40 border-purple-600'
-          : highlight
-            ? 'border-[#2a2a4a] bg-[#1a2a1a]/40 hover:bg-[#2a3a2a]/40'
-            : 'border-transparent hover:bg-[#2a2a4a]'
-      }`}
+      onClick={() => { if (suitability !== 'cannot_equip') onSelect(member.id); }}
+      className={`w-full text-left px-3 py-2 rounded-lg border transition-all text-sm flex items-center gap-3 relative overflow-hidden ${getSuitabilityStyles()}`}
     >
       <div className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
         selected ? 'bg-purple-500 border-purple-400' : 'border-[#475569]'
@@ -530,7 +629,12 @@ function MemberOption({
         {selected && <Check size={10} className="text-white" />}
       </div>
       <span style={{ color }}>{member.displayName}</span>
-      <span className="text-xs ml-auto" style={{ color: color + '80' }}>{member.wowClassZh}</span>
+      <span className="text-xs ml-auto font-medium" style={{ color: labelColor }}>
+         {getSuitabilityLabel()}
+      </span>
+      {suitability === 'main_spec' && !selected && (
+         <div className="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent"></div>
+      )}
     </button>
   );
 }
@@ -563,6 +667,24 @@ function DropEntryModal({
   
   // Calculate item level based on difficulty
   const calculateIlvl = (baseLevel: number, diff: Difficulty) => {
+    // Offset relative to Normal diff being baseline 250 for squished WoW 12.0
+    const diffOffset = diff === 'normal' ? 0 : diff === 'heroic' ? 13 : diff === 'mythic' ? 26 : 0;
+    
+    // Auto-scale WoWhead base 571 (11.0 TWW) to compressed ~250 (12.0 Midnight/Alpha)
+    if (baseLevel >= 500 && baseLevel <= 585) {
+      const raid = RAIDS.find((r) => r.id === kill.raidId || r.id === `raid_${kill.raidId}`);
+      const bossIdx = raid?.bosses.findIndex((b) => b.id === kill.bossId) ?? 0;
+      
+      let bossOffset = 0;
+      if (bossIdx >= 4 && bossIdx <= 5) bossOffset = 3;
+      if (bossIdx >= 6 && bossIdx <= 6) bossOffset = 6;
+      if (bossIdx >= 7) bossOffset = 9;
+      
+      // We assume Normal drops 250+ so we add the offsets correctly
+      return 250 + diffOffset + bossOffset;
+    }
+    
+    // Fallback block mimicking types.ts baseline constants
     switch(diff) {
       case 'normal': return baseLevel - 13;
       case 'heroic': return baseLevel;
@@ -596,7 +718,7 @@ function DropEntryModal({
           <div>
             <h2 className="text-xl font-bold flex items-center gap-2 text-white">
               <Sword size={22} className="text-purple-400" />
-              {boss.name} — 记录掉落包裹
+              {boss.nameZh || boss.name} — 记录掉落包裹
             </h2>
             <p className="text-[13px] text-[#64748b] mt-1">从左侧点击卡片快速封存装备包裹。</p>
           </div>
@@ -613,7 +735,7 @@ function DropEntryModal({
                   const isSelected = selectedCount > 0;
                   
                   const itemData = ALL_ITEMS.find((i) => i.id === item.id);
-                  const enrichedItem = {
+                  const enrichedItem: any = {
                     ...item,
                     itemLevel: realIlvl,
                     icon: itemData?.icon,
@@ -623,11 +745,12 @@ function DropEntryModal({
                   };
                   
                   return (
-                    <div key={item.id} className="relative group">
+                    <div key={item.id} className="relative group h-full">
                       <WoWItemCard
-                        item={enrichedItem}
+                        className="h-full"
+                        item={enrichedItem as any}
                         renderItemType={renderItemType}
-                        onClick={() => addItem({...item, itemLevel: realIlvl, icon: itemData?.icon})}
+                        onClick={() => addItem({...item, itemLevel: realIlvl, icon: itemData?.icon} as any)}
                         selected={isSelected}
                       />
                       {isSelected && (
@@ -672,7 +795,7 @@ function DropEntryModal({
                     <div key={idx} className="flex items-center gap-3 bg-[#12121f] border border-[#2a2a4a] hover:border-red-500/30 shadow-sm rounded-xl p-3 group transition-all relative overflow-hidden">
                       <div className={`absolute left-0 top-0 bottom-0 w-1 ${isLegendary ? 'bg-orange-500' : 'bg-purple-500'}`}></div>
                       <div className="flex-1 min-w-0 pl-1">
-                        <div className={`text-[13px] font-bold truncate pr-2 ${isLegendary ? 'text-orange-400' : 'text-purple-200'}`}>{item.name}</div>
+                        <div className={`text-[13px] font-bold truncate pr-2 ${isLegendary ? 'text-orange-400' : 'text-purple-200'}`}>{item.nameZh || item.name || '未知物品'}</div>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-[11px] text-[#64748b] font-medium">{renderItemType(item)}</span>
                           <span className="text-[#334155] mx-0.5 text-[10px]">|</span>
